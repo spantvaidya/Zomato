@@ -27,4 +27,19 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+//Add SeedData and Pending Migration at the start of the App
+ApplyMigration();
+
+void ApplyMigration()
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbInitilizer = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        if (dbInitilizer.Database.GetPendingMigrations().Count() > 0)
+        {
+            dbInitilizer.Database.Migrate();
+        };
+    }
+}
+
 app.Run();
