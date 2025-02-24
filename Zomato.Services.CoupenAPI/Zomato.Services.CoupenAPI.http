@@ -1,0 +1,6 @@
+@Zomato.Services.CoupenAPI_HostAddress = http://localhost:5004
+
+GET {{Zomato.Services.CoupenAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
