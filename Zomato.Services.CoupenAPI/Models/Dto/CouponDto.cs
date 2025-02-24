@@ -1,9 +1,9 @@
 ﻿namespace Zomato.Services.CoupenAPI.Models
 {
-    public class CoupenDto
+    public class CouponDto
     {
-        public int CoupenId { get; set; }
-        public string CoupenCode { get; set; }
+        public int CouponId { get; set; }
+        public string CouponCode { get; set; }
         public string DiscountAmount { get; set; }
         public string MinAmount { get; set; }
     }

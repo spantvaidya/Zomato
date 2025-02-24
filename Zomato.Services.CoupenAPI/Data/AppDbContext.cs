@@ -9,24 +9,24 @@ namespace Zomato.Services.CoupenAPI.Data
         {
 
         }
-        public DbSet<Coupen> Coupens { get; set; }
+        public DbSet<Coupon> Coupons { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Coupen>().HasData(
-                new Coupen
+            modelBuilder.Entity<Coupon>().HasData(
+                new Coupon
                 {
-                    CoupenCode = "10OFF",
-                    CoupenId = 1,
+                    CouponCode = "10OFF",
+                    CouponId = 1,
                     DiscountAmount = "10",
                     MinAmount = "50",
                 },
-                new Coupen
+                new Coupon
                 {
-                    CoupenCode = "20OFF",
-                    CoupenId = 2,
+                    CouponCode = "20OFF",
+                    CouponId = 2,
                     DiscountAmount = "20",
                     MinAmount = "80",
                 });
