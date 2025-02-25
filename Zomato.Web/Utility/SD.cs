@@ -1,0 +1,11 @@
+﻿namespace Zomato.Web.Utility
+{
+    public class SD
+    {
+        public enum ApiType
+        {
+            GET, POST, PUT, DELETE, TRACE, OPTIONS, HEAD, CONNECT, PATCH
+        }
+        public static string CouponAPIBase { get; set; }
+    }
+}
