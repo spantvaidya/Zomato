@@ -5,18 +5,21 @@ using Zomato.Web.Services.IService;
 
 namespace Zomato.Web.Services
 {
-    public class BaseService(IHttpClientFactory httpClientFactory) : IBaseService
+    public class BaseService : IBaseService
     {
-        private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
-
+        private readonly IHttpClientFactory _httpClientFactory;
+        public BaseService(IHttpClientFactory httpClientFactory)
+        {
+            _httpClientFactory = httpClientFactory;
+        }
         public async Task<ResponseDto?> SendAsync(RequestDto requestDto)
         {
             try
             {
                 HttpClient client = _httpClientFactory.CreateClient("ZomatoAPI");
                 HttpResponseMessage message = new HttpResponseMessage();
-                message.Headers.Add("Content-Type", "application/json");
-                //message.Headers.Add("Accept", "application/json");
+                //message.Headers.Add("Content-Type", "application/json");
+                message.Headers.Add("Accept", "application/json");
 
                 message.RequestMessage = new HttpRequestMessage
                 {
