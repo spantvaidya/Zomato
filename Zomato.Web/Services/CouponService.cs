@@ -12,7 +12,7 @@ namespace Zomato.Web.Services
         {
             _baseService = baseService;
         }
-        public async Task<ResponseDto?> CreateCouponsAsync(CouponDto couponDto)
+        public async Task<ResponseDto?> CreateCouponAsync(CouponDto couponDto)
         {
             return await _baseService.SendAsync(new RequestDto
             {
@@ -22,12 +22,12 @@ namespace Zomato.Web.Services
             });
         }
 
-        public async Task<ResponseDto?> DeleteCouponAsync(int id)
+        public async Task<ResponseDto?> DeleteCouponAsync(int Id)
         {
             return await _baseService.SendAsync(new RequestDto
             {
-                Apitype = SD.ApiType.GET,
-                Url = SD.CouponAPIBase + "/api/coupon/DeleteCoupon/" + id
+                Apitype = SD.ApiType.POST,
+                Url = SD.CouponAPIBase + "/api/coupon/DeleteCoupon/" + Id
             });
         }
 
@@ -58,20 +58,20 @@ namespace Zomato.Web.Services
             });
         }
 
-        //public async Task<ResponseDto?> GetCouponByIdAsync(int id)
-        //{
-        //    return await _baseService.SendAsync(new RequestDto
-        //    {
-        //        Apitype = SD.ApiType.GET,
-        //        Url = SD.CouponAPIBase + "/api/coupon/GetCouponByCode/" + couponCode
-        //    });
-        //}
-
-        public async Task<ResponseDto?> UpdateCouponsAsync(CouponDto couponDto)
+        public async Task<ResponseDto?> GetCouponByIdAsync(int id)
         {
             return await _baseService.SendAsync(new RequestDto
             {
                 Apitype = SD.ApiType.GET,
+                Url = SD.CouponAPIBase + "/api/coupon/GetCouponById/" + id
+            });
+        }
+
+        public async Task<ResponseDto?> UpdateCouponAsync(CouponDto couponDto)
+        {
+            return await _baseService.SendAsync(new RequestDto
+            {
+                Apitype = SD.ApiType.PUT,
                 Url = SD.CouponAPIBase + "/api/coupon/UpdateCoupon/",
                 Data = couponDto
             });

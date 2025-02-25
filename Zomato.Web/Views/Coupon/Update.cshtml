@@ -2,10 +2,11 @@
 <form method="post">
     <br />
     <div class="container border p-3">
-        <h1 class="text-white text-center">Create Coupon</h1>
+        <h1 class="text-white text-center">Update Coupon</h1>
 
         <hr />
         <div class="row">
+            <input type="hidden" asp-for="@Model.CouponId" />
             <div class="col-2">
                 <label asp-for="CouponCode" class="control-label pt-2" style="font-size:20px;"></label>
             </div>
@@ -29,7 +30,7 @@
                 <a class="btn-primary btn form-control" asp-action="Index" asp-controller="Coupon">Back to List</a>
             </div>
             <div class="col-5">
-                <input asp-action="Create" asp-controller="Coupon" type="submit" value="Create" class="btn btn-success form-control" />
+                <button asp-action="Update" asp-controller="Coupon" class="btn btn-success form-control">Update</button>
             </div>
         </div>
         <div>

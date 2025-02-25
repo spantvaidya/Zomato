@@ -28,5 +28,61 @@ namespace Zomato.Web.Controllers
         {
             return View();
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(CouponDto couponDto)
+        {
+            var responseDto = await _couponService.CreateCouponAsync(couponDto);
+
+            if (responseDto == null)
+            {
+                return NotFound();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+        
+        public async Task<IActionResult> Update(int id)
+        {
+            var responseDto = await _couponService.GetCouponByIdAsync(id);
+            if (responseDto.Result == null)
+            {                
+                return NotFound();
+            }
+            var coupons = JsonConvert.DeserializeObject<CouponDto>(responseDto.Result.ToString());
+            return View(coupons);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Update(CouponDto couponDto)
+        {
+            var responseDto = await _couponService.UpdateCouponAsync(couponDto);
+
+            if (responseDto == null)
+            {
+                return NotFound();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> Delete(int Id)
+        {
+            var responseDto = await _couponService.GetCouponByIdAsync(Id);
+            if (responseDto.Result == null)
+            {
+                return NotFound();
+            }
+
+            responseDto = await _couponService.DeleteCouponAsync(Id);
+
+            if (responseDto == null)
+            {
+                return NotFound();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

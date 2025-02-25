@@ -29,6 +29,26 @@ namespace Zomato.Services.CoupenAPI.Controllers
         }
 
         [HttpGet]
+        [Route("GetCouponById/{id}")]
+        public object GetCouponById(int id)
+        {
+            try
+            {
+                var coupen = _dbcontext.Coupons.FirstOrDefault(x => x.CouponId == id);
+                _responseDto.Result = _mapper.Map<CouponDto>(coupen);
+                return _responseDto;
+            }
+            catch (Exception ex)
+            {
+                _responseDto.Message = ex.Message;
+                _responseDto.Message = "failure";
+                _responseDto.IsSuccess = false;
+            }
+
+            return _responseDto;
+        }
+
+        [HttpGet]
         [Route("GetCouponByCode/{code}")]
         public object GetCouponByCode(string code)
         {
@@ -92,7 +112,7 @@ namespace Zomato.Services.CoupenAPI.Controllers
                     _responseDto.Message = "Record not found";
                     _responseDto.IsSuccess = false;
                 }
-                
+
                 return _responseDto;
             }
             catch (Exception ex)
@@ -105,7 +125,7 @@ namespace Zomato.Services.CoupenAPI.Controllers
         }
 
         [HttpPost]
-        [Route("DeleteCoupon")]
+        [Route("DeleteCoupon/{Id}")]
         public object DeleteCoupon(int Id)
         {
             try
