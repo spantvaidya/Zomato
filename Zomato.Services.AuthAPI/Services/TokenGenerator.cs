@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -9,19 +10,25 @@ namespace Zomato.Services.AuthAPI.Services
 {
     public class TokenGenerator : ITokenGenerator
     {
-        private readonly IConfiguration _configuration;
+        //private readonly IConfiguration _configuration;
+        private readonly JwtOptions _jwtOptions;
 
-        public TokenGenerator(IConfiguration configuration)
+        public TokenGenerator(/*IConfiguration configuration,*/ IOptions<JwtOptions> _jwtOptions)
         {
-            _configuration = configuration;
+            //_configuration = configuration;
+            this._jwtOptions = _jwtOptions.Value;
         }
 
         public string GenerateToken(ApplicationUser user)
         {
-            var jwtOptions = _configuration.GetSection("ApiSettings:JWTOptions");
-            var key = Encoding.ASCII.GetBytes(jwtOptions["Key"]);
-            var issuer = jwtOptions["Issuer"];
-            var audience = jwtOptions["Audience"];
+            //var jwtOptions = _configuration.GetSection("ApiSettings:JWTOptions");
+            //var key = Encoding.ASCII.GetBytes(jwtOptions["Key"]);
+            //var issuer = jwtOptions["Issuer"];
+            //var audience = jwtOptions["Audience"];
+
+            var key = Encoding.ASCII.GetBytes(_jwtOptions.Secret);
+            var issuer = _jwtOptions.Issuer;
+            var audience = _jwtOptions.Audience;
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenDescriptor = new SecurityTokenDescriptor
