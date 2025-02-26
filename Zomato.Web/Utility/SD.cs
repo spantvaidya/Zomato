@@ -7,5 +7,6 @@
             GET, POST, PUT, DELETE, TRACE, OPTIONS, HEAD, CONNECT, PATCH
         }
         public static string CouponAPIBase { get; set; }
+        public static string AuthAPIBase { get; set; }
     }
 }
