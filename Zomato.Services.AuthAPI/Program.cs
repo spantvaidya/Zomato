@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Zomato.Services.AuthAPI.Data;
+using Zomato.Services.AuthAPI.Models;
+using Zomato.Services.AuthAPI.Services;
+using Zomato.Services.AuthAPI.Services.IService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,9 +17,14 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(option =>
 option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("ApiSettings:JWTOptions"));
+
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
+
+builder.Services.AddScoped<IAuthService, AuthService>();
+
 
 var app = builder.Build();
 
