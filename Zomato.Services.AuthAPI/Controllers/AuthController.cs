@@ -38,6 +38,7 @@ namespace Zomato.Services.AuthAPI.Controllers
 
             return Ok(_responseDto);
         }
+
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
@@ -60,6 +61,23 @@ namespace Zomato.Services.AuthAPI.Controllers
                 StatusCode = StatusCodes.Status200OK,
                 Result = user
             };
+            return Ok(_responseDto);
+        }
+
+        [HttpPost("AssignRole")]
+        public async Task<IActionResult> AssignRole([FromBody] RegisterationDto registerationDto)
+        {
+            var assignRole = await _authService.AssignRole(registerationDto.Email, registerationDto.Role);
+            if (!assignRole)
+            {
+                _responseDto = new ResponseDto
+                {
+                    IsSuccess = false,
+                    Message = "Error Encountered",
+                    StatusCode = StatusCodes.Status401Unauthorized
+                };
+                return Unauthorized(_responseDto);
+            }
             return Ok(_responseDto);
         }
     }

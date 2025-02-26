@@ -15,6 +15,21 @@ namespace Zomato.Services.AuthAPI.Services
         private readonly RoleManager<IdentityRole> _roleManager = roleManager;
         private readonly ITokenGenerator _tokenGenerator = tokenGenerator;
 
+        public async Task<bool> AssignRole(string email, string roleName)
+        {
+            var user = await _DbContext.ApplicationUsers.FirstOrDefaultAsync(u => u.Email == email);
+            if (user != null) 
+            {
+                if(!await _roleManager.RoleExistsAsync(roleName))
+                {
+                    await _roleManager.CreateAsync(new IdentityRole(roleName.ToUpper()));
+                }
+                await _userManager.AddToRoleAsync(user, roleName);
+                return true;
+            }
+            return false;
+        }
+
         public async Task<LoginResponseDto> Login(LoginDto loginDto)
         {
             var user = await _DbContext.ApplicationUsers.FirstOrDefaultAsync(u => u.Email == loginDto.Username);

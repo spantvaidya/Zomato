@@ -6,5 +6,6 @@ namespace Zomato.Services.AuthAPI.Services.IService
     {
         Task<LoginResponseDto> Login(LoginDto loginDto);
         Task<string> Register(RegisterationDto registerDto);
+        Task<bool> AssignRole(string email, string roleName);
     }
 }

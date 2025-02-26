@@ -14,6 +14,7 @@ namespace Zomato.Services.AuthAPI.Models.Dto
         [Compare("Password", ErrorMessage = "Password and Confirm Password should match")]
         public string ConfirmPassword { get; set; }
         [DisplayName("Phone Number")]
-        public string Phone { get; set; }
+        public string? Phone { get; set; }
+        public string? Role { get; set; }
     }
 }
