@@ -24,6 +24,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddDefaultTokenProviders();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ITokenGenerator, TokenGenerator>();
 
 
 var app = builder.Build();

@@ -35,13 +35,32 @@ namespace Zomato.Services.AuthAPI.Controllers
                 StatusCode = StatusCodes.Status200OK,
                 Result = response
             };
-            
+
             return Ok(_responseDto);
         }
         [HttpPost("login")]
-        public async Task<IActionResult> Login()
+        public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
-            return Ok();
+            var user = await _authService.Login(loginDto);
+            if (user.User == null || String.IsNullOrEmpty(user.Token))
+            {
+                _responseDto = new ResponseDto
+                {
+                    IsSuccess = false,
+                    Message = "Invalid Credentials",
+                    StatusCode = StatusCodes.Status401Unauthorized
+                };
+                return Unauthorized(_responseDto);
+            }
+
+            _responseDto = new ResponseDto
+            {
+                IsSuccess = true,
+                Message = "Login Successful",
+                StatusCode = StatusCodes.Status200OK,
+                Result = user
+            };
+            return Ok(_responseDto);
         }
     }
 }
