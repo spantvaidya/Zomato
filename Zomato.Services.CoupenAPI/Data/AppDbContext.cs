@@ -20,15 +20,15 @@ namespace Zomato.Services.CoupenAPI.Data
                 {
                     CouponCode = "10OFF",
                     CouponId = 1,
-                    DiscountAmount = "10",
-                    MinAmount = "50",
+                    DiscountAmount = 10,
+                    MinAmount = 50,
                 },
                 new Coupon
                 {
                     CouponCode = "20OFF",
                     CouponId = 2,
-                    DiscountAmount = "20",
-                    MinAmount = "80",
+                    DiscountAmount = 20,
+                    MinAmount = 80,
                 });
         }
     }

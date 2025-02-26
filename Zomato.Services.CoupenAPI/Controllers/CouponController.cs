@@ -7,7 +7,7 @@ using Zomato.Services.CoupenAPI.Models.Dto;
 
 namespace Zomato.Services.CoupenAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/coupon")]
     [ApiController]
     public class CouponController : ControllerBase
     {

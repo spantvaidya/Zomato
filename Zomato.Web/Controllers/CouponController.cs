@@ -23,7 +23,7 @@ namespace Zomato.Web.Controllers
             var coupons = JsonConvert.DeserializeObject<List<CouponDto>>(responseDto.Result.ToString());
             return View(coupons);
         }
-        
+
         public IActionResult Create()
         {
             return View();
@@ -32,57 +32,98 @@ namespace Zomato.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CouponDto couponDto)
         {
-            var responseDto = await _couponService.CreateCouponAsync(couponDto);
-
-            if (responseDto == null)
+            try
             {
-                return NotFound();
+                if (ModelState.IsValid)
+                {
+                    var responseDto = await _couponService.CreateCouponAsync(couponDto);
+
+                    if (responseDto == null)
+                    {
+                        return NotFound();
+                    }
+                    TempData["success"] = "Coupon Added Succesfully";
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    TempData["error"] = "Invalid Data";
+                    return View(couponDto);
+                }
             }
 
-            return RedirectToAction(nameof(Index));
+            catch (Exception ex)
+            {
+                TempData["error"] = ex.Message;
+                return RedirectToAction(nameof(Create));
+            }
         }
-        
+
         public async Task<IActionResult> Update(int id)
         {
-            var responseDto = await _couponService.GetCouponByIdAsync(id);
-            if (responseDto.Result == null)
-            {                
-                return NotFound();
+            try
+            {
+                var responseDto = await _couponService.GetCouponByIdAsync(id);
+                if (responseDto.Result == null)
+                {
+                    return NotFound();
+                }
+                var coupons = JsonConvert.DeserializeObject<CouponDto>(responseDto.Result.ToString());                
+                return View(coupons);
             }
-            var coupons = JsonConvert.DeserializeObject<CouponDto>(responseDto.Result.ToString());
-            return View(coupons);
+            catch (Exception ex)
+            {
+                TempData["error"] = ex.Message;
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Update(CouponDto couponDto)
         {
-            var responseDto = await _couponService.UpdateCouponAsync(couponDto);
-
-            if (responseDto == null)
+            try
             {
-                return NotFound();
+                var responseDto = await _couponService.UpdateCouponAsync(couponDto);
+
+                if (responseDto.Result == null)
+                {
+                    TempData["error"] = "Something went wrong";
+                    return View(nameof(Update),couponDto);
+                }
+                TempData["success"] = "Coupon Updated Succesfully";
+                return RedirectToAction(nameof(Index));
             }
 
-            return RedirectToAction(nameof(Index));
+            catch(Exception ex)
+            {
+                TempData["error"] = ex.Message;
+                return RedirectToAction(nameof(Index));
+            }           
         }
-        
+
         [HttpPost]
         public async Task<IActionResult> Delete(int Id)
         {
-            var responseDto = await _couponService.GetCouponByIdAsync(Id);
-            if (responseDto.Result == null)
+            try
             {
-                return NotFound();
+                var responseDto = await _couponService.GetCouponByIdAsync(Id);
+                if (responseDto.Result == null)
+                {
+                    TempData["error"] = "Coupon Not Found";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                responseDto = await _couponService.DeleteCouponAsync(Id);
+
+                return RedirectToAction(nameof(Index));
             }
 
-            responseDto = await _couponService.DeleteCouponAsync(Id);
-
-            if (responseDto == null)
+            catch(Exception ex)
             {
-                return NotFound();
+                TempData["error"] = ex.Message;
+                return RedirectToAction(nameof(Index));
             }
-
-            return RedirectToAction(nameof(Index));
+            
         }
     }
 }
