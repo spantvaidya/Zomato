@@ -1,5 +1,57 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@model RegisterationDto
+
+<div class="container border pt-4">
+    <div class="col-8 text-center justify-content-between m-auto ">
+        <div class="row">
+            <h1 class="">Register</h1>
+        </div>
+        <div class="p-4">
+            <form class="row" method="post">
+                @* <input type="hidden" asp-for="Role" /> *@
+                <div asp-validation-summary="ModelOnly" class="text-danger text-start"></div>
+                <div class="form-group text-start mb-1">
+                    <label asp-for="Email" class="ms-2 control-label pb-2"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group text-start mb-1 col-md-6">
+                    <label asp-for="Name" class="ms-2 control-label pb-2"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group text-start mb-1 col-md-6">
+                    <label asp-for="Phone" class="ms-2 control-label pb-2"></label>
+                    <input asp-for="Phone" class="form-control" />
+                    <span asp-validation-for="Phone" class="text-danger"></span>
+                </div>
+                <div class="form-group text-start mb-1 col-md-6">
+                    <label asp-for="Password" class="ms-2 control-label pb-2"></label>
+                    <input asp-for="Password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="form-group text-start mb-1 col-md-6">
+                    <label asp-for="ConfirmPassword" class="ms-2 control-label pb-2"></label>
+                    <input asp-for="ConfirmPassword" class="form-control" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+                <div class="form-group text-start mb-1 col-md-6">
+                    <label class="ms-2 control-label pb-2">Role</label>
+                    @*  <select class="form-select" asp-for="Role" asp-items="@Model.Role" disabled> 
+                                 <option disabled selected>-Select Role-</option> 
+                            </select>*@
+                    <input asp-for="Role" class="form-control" aria-required="true" />
+                </div>
+                <div class="col-12 mt-2">
+                    <button type="submit" asp-action="Register" asp-controller="Auth" 
+                    class="w-100 btn btn-lg btn-success">Register</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@* for client side validation *@
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
 }

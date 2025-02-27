@@ -1,5 +1,63 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@model LoginDto
+
+<form method="post">
+    <div class="container border p-4">
+        <div class="row text-center">
+            <h1>Login</h1>
+        </div>
+        <div class="row">
+            <div class="col-md-4 offset-md-4">
+                <div asp-validation-summary="ModelOnly" class="text-danger text-center" style="list-style-type: none; padding-left: 0;"></div>
+                <div class="form-group">
+                    <label asp-for="Username" class="control-label p-2"></label>
+                    <input asp-for="Username" class="form-control" />
+                    <span asp-validation-for="Username" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Password" class="control-label p-2"></label>
+                    <div class="input-group">
+                        <input asp-for="Password" class="form-control" type="password" id="passwordInput" />
+                        <div class="input-group-append">
+                            <span class="input-group-text" onclick="togglePasswordVisibility()">
+                                <i class="bi bi-eye" id="togglePasswordIcon"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+              
+                <div class="form-group text-center mt-4">
+                    <button type="submit" class="btn btn-success form-control">Login</button>
+                </div>
+                <div class="form-group text-center mt-3">
+                    <a asp-action="ForgotPassword" asp-controller="Auth"
+                    class="text-decoration-none text-primary text-light">Forgot Password?</a>
+                </div>
+                <div class="form-group text-center mt-3">
+                    <a asp-action="Register" asp-controller="Auth"
+                    class="text-decoration-none text-primary text-light">New User? Register Here</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function togglePasswordVisibility() {
+            var passwordInput = document.getElementById("passwordInput");
+            var togglePasswordIcon = document.getElementById("togglePasswordIcon");
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                togglePasswordIcon.classList.remove("fa-eye");
+                togglePasswordIcon.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                togglePasswordIcon.classList.remove("fa-eye-slash");
+                togglePasswordIcon.classList.add("fa-eye");
+            }
+        }
+    </script>
 }

@@ -13,10 +13,10 @@ namespace Zomato.Services.AuthAPI.Services
         //private readonly IConfiguration _configuration;
         private readonly JwtOptions _jwtOptions;
 
-        public TokenGenerator(/*IConfiguration configuration,*/ IOptions<JwtOptions> _jwtOptions)
+        public TokenGenerator(IConfiguration configuration, IOptions<JwtOptions> jwtOptions)
         {
             //_configuration = configuration;
-            this._jwtOptions = _jwtOptions.Value;
+            this._jwtOptions = jwtOptions.Value;
         }
 
         public string GenerateToken(ApplicationUser user)

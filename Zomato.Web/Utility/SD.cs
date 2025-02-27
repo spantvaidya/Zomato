@@ -1,4 +1,6 @@
-﻿namespace Zomato.Web.Utility
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace Zomato.Web.Utility
 {
     public class SD
     {
@@ -8,5 +10,7 @@
         }
         public static string CouponAPIBase { get; set; }
         public static string AuthAPIBase { get; set; }
+        public static string RoleAdmin = "Admin";
+        public static string RoleCustomer = "Customer";
     }
 }

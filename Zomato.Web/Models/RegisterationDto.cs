@@ -12,11 +12,13 @@ namespace Zomato.Web.Models
         public string Email { get; set; }
 
         [Required]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
 
         [Required]
         [DisplayName("Confirm Password")]
         [Compare("Password", ErrorMessage = "Password and Confirm Password should match")]
+        [DataType(DataType.Password)]
         public string ConfirmPassword { get; set; }
 
         [DisplayName("Phone Number")]

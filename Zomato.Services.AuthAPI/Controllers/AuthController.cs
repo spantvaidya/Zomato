@@ -78,6 +78,14 @@ namespace Zomato.Services.AuthAPI.Controllers
                 };
                 return Unauthorized(_responseDto);
             }
+
+            _responseDto = new ResponseDto
+            {
+                IsSuccess = true,
+                Message = "",
+                StatusCode = StatusCodes.Status200OK,
+                Result = assignRole
+            };
             return Ok(_responseDto);
         }
     }

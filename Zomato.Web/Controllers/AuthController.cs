@@ -1,6 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Newtonsoft.Json;
 using Zomato.Web.Models;
 using Zomato.Web.Services.IService;
+using Zomato.Web.Utility;
 
 namespace Zomato.Web.Controllers
 {
@@ -17,37 +21,64 @@ namespace Zomato.Web.Controllers
         [HttpGet]
         public IActionResult Register()
         {
-            return View();
+            RegisterationDto registerationDto = new RegisterationDto
+            {
+                Role = "Customer"
+            };
+            return View(registerationDto);
         }
 
         [HttpPost]
-        public IActionResult Login([FromBody] LoginDto loginDto)
+        public async Task<IActionResult> Login(LoginDto loginDto)
         {
             if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var response = _authService.LoginAsync(loginDto);
-            if (response == null)
+            var response = await _authService.LoginAsync(loginDto);
+            if (response == null || response.Result == null || response.IsSuccess == false)
             {
-                return Unauthorized(response);
+                ModelState.AddModelError(string.Empty, response.Message);
+                return View(loginDto);
             }
-            return Ok(response);
+
+            LoginResponseDto loginResponseDto = JsonConvert.DeserializeObject<LoginResponseDto>(Convert.ToString(response.Result));
+
+
+            //await _signInManager.SignInAsync(loginResponseDto.User.Email, isPersistent: false);
+            TempData["success"] = "Login Successful";
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
-        public IActionResult Register([FromBody] RegisterationDto registerationDto)
+        public async Task<IActionResult> Register(RegisterationDto registerationDto)
         {
             if (!ModelState.IsValid)
             {
+                TempData["error"] = "Invalid Data";
                 return BadRequest(ModelState);
             }
-            var response = _authService.RegisterAsync(registerationDto);
-            if (response == null)
+            ResponseDto responseDto = await _authService.RegisterAsync(registerationDto);
+            ResponseDto responseAssignRole;
+            if (responseDto == null || responseDto.IsSuccess == false)
             {
-                return BadRequest(response);
+                TempData["error"] = "Something went wrong";
+                return BadRequest(responseDto);
             }
-            return Ok(response);
+
+            if (String.IsNullOrEmpty(registerationDto.Role))
+            {
+                registerationDto.Role = SD.RoleCustomer;
+            }
+            responseAssignRole = await _authService.AssignRoleAsync(registerationDto);
+
+            if (responseAssignRole != null || responseAssignRole.IsSuccess == true)
+            {
+                TempData["success"] = "Registration Successful";
+                return RedirectToAction(nameof(Login), "Auth");
+            }            
+            
+            return View(registerationDto);
         }
 
         [HttpGet]
