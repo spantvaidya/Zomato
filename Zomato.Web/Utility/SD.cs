@@ -12,5 +12,6 @@ namespace Zomato.Web.Utility
         public static string AuthAPIBase { get; set; }
         public static string RoleAdmin = "Admin";
         public static string RoleCustomer = "Customer";
+        public static string TokenCookie = "jwtToken";
     }
 }

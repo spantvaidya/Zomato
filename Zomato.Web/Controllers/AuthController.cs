@@ -1,16 +1,19 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using Zomato.Web.Models;
 using Zomato.Web.Services.IService;
 using Zomato.Web.Utility;
 
 namespace Zomato.Web.Controllers
 {
-    public class AuthController(IAuthService authService) : Controller
+    public class AuthController(IAuthService authService, ITokenProvider tokenProvider) : Controller
     {
         private readonly IAuthService _authService = authService;
+        private readonly ITokenProvider _tokenProvider = tokenProvider;
 
         [HttpGet]
         public IActionResult Login()
@@ -31,7 +34,7 @@ namespace Zomato.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginDto loginDto)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -44,8 +47,10 @@ namespace Zomato.Web.Controllers
 
             LoginResponseDto loginResponseDto = JsonConvert.DeserializeObject<LoginResponseDto>(Convert.ToString(response.Result));
 
+            // Set token for logged in user
+            await SignInUser(loginResponseDto);
+            _tokenProvider.SetToken(loginResponseDto.Token);
 
-            //await _signInManager.SignInAsync(loginResponseDto.User.Email, isPersistent: false);
             TempData["success"] = "Login Successful";
             return RedirectToAction("Index", "Home");
         }
@@ -76,15 +81,40 @@ namespace Zomato.Web.Controllers
             {
                 TempData["success"] = "Registration Successful";
                 return RedirectToAction(nameof(Login), "Auth");
-            }            
-            
+            }
+
             return View(registerationDto);
         }
 
         [HttpGet]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
-            return View();
+            await HttpContext.SignOutAsync();
+            _tokenProvider.ClearToken();
+            return RedirectToAction("Index", "Home");
+        }
+
+        public async Task SignInUser(LoginResponseDto loginResponseDto)
+        {
+            var handler = new JwtSecurityTokenHandler();
+
+            var jwtToken = handler.ReadJwtToken(loginResponseDto.Token);
+
+            var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            identity.AddClaim(new Claim(JwtRegisteredClaimNames.Email, 
+                 jwtToken.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Email).Value));
+            identity.AddClaim(new Claim(JwtRegisteredClaimNames.Sub,
+                 jwtToken.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sub).Value));
+            identity.AddClaim(new Claim(JwtRegisteredClaimNames.Name,
+                 jwtToken.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Name).Value));
+
+            identity.AddClaim(new Claim(ClaimTypes.Name, 
+                jwtToken.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Email).Value));
+
+            var principal = new ClaimsPrincipal(identity);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,principal);
         }
     }
 }
