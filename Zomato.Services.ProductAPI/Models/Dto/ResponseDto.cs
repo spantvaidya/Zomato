@@ -1,4 +1,4 @@
-﻿namespace Zomato.Services.CoupenAPI.Models.Dto
+﻿namespace Zomato.Services.ProductAPI.Models.Dto
 {
     public class ResponseDto
     {

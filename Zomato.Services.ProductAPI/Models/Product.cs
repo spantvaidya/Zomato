@@ -1,0 +1,27 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Zomato.Services.ProductAPI.Models
+{
+    public class Product
+    {
+        [Key]
+        public int ProductId { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        public string Name { get; set; }
+
+        [StringLength(500)]
+        public string Description { get; set; }
+
+        [Required]
+        [Range(0.01, 10000.00)]
+        public double Price { get; set; }
+
+        [Required]
+        public string Category { get; set; }
+
+        [Url]
+        public string ImageUrl { get; set; }
+    }
+}
