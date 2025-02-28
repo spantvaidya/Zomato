@@ -45,7 +45,8 @@ namespace Zomato.Services.AuthAPI.Services
             }
 
             //generate JWT token
-            string jwtToken = _tokenGenerator.GenerateToken(user);
+            var roles = await _userManager.GetRolesAsync(user);//fetch user roles
+            string jwtToken = _tokenGenerator.GenerateToken(user,roles);
 
             UserDto userDto = new UserDto
             {

@@ -47,7 +47,7 @@ namespace Zomato.Web.Controllers
 
             LoginResponseDto loginResponseDto = JsonConvert.DeserializeObject<LoginResponseDto>(Convert.ToString(response.Result));
 
-            // Set token for logged in user
+            // Signin User and Set token for logged in user
             await SignInUser(loginResponseDto);
             _tokenProvider.SetToken(loginResponseDto.Token);
 
@@ -111,6 +111,8 @@ namespace Zomato.Web.Controllers
 
             identity.AddClaim(new Claim(ClaimTypes.Name, 
                 jwtToken.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Email).Value));
+            identity.AddClaim(new Claim(ClaimTypes.Role, 
+                jwtToken.Claims.FirstOrDefault(claim => claim.Type == "role").Value));
 
             var principal = new ClaimsPrincipal(identity);
 

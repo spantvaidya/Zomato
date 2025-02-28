@@ -19,28 +19,28 @@ namespace Zomato.Services.AuthAPI.Services
             this._jwtOptions = jwtOptions.Value;
         }
 
-        public string GenerateToken(ApplicationUser user)
+        public string GenerateToken(ApplicationUser user, IEnumerable<string> roles)
         {
-            //var jwtOptions = _configuration.GetSection("ApiSettings:JWTOptions");
-            //var key = Encoding.ASCII.GetBytes(jwtOptions["Key"]);
-            //var issuer = jwtOptions["Issuer"];
-            //var audience = jwtOptions["Audience"];
-
             var key = Encoding.ASCII.GetBytes(_jwtOptions.Secret);
             var issuer = _jwtOptions.Issuer;
             var audience = _jwtOptions.Audience;
 
             var tokenHandler = new JwtSecurityTokenHandler();
+
+            var claimlist = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(JwtRegisteredClaimNames.Name, user.Name),
+            };
+
+            claimlist.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[]
-                {
-                        new Claim(JwtRegisteredClaimNames.Sub, user.Id),
-                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                        new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                        new Claim("name", user.Name)
-                    }),
-                Expires = DateTime.UtcNow.AddHours(1),
+                Subject = new ClaimsIdentity(claimlist),
+                Expires = DateTime.UtcNow.AddDays(7),
                 Issuer = issuer,
                 Audience = audience,
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
