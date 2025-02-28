@@ -19,7 +19,7 @@ namespace Zomato.Web.Services
                 Apitype = SD.ApiType.POST,
                 Url = SD.CouponAPIBase + "/api/coupon/AddCoupon",
                 Data = couponDto
-            });
+            }, true);
         }
 
         public async Task<ResponseDto?> DeleteCouponAsync(int Id)
@@ -28,7 +28,7 @@ namespace Zomato.Web.Services
             {
                 Apitype = SD.ApiType.POST,
                 Url = SD.CouponAPIBase + "/api/coupon/DeleteCoupon/" + Id
-            });
+            }, true);
         }
 
         public async Task<ResponseDto?> GetAllCouponsAsync()
@@ -39,7 +39,7 @@ namespace Zomato.Web.Services
                 {
                     Apitype = SD.ApiType.GET,
                     Url = SD.CouponAPIBase + "/api/coupon/"
-                });
+                }, true);
                 return result;
             }
 
@@ -55,7 +55,7 @@ namespace Zomato.Web.Services
             {
                 Apitype = SD.ApiType.GET,
                 Url = SD.CouponAPIBase + "/api/coupon/GetCouponByCode/" + couponCode
-            });
+            }, true);
         }
 
         public async Task<ResponseDto?> GetCouponByIdAsync(int id)
@@ -64,7 +64,7 @@ namespace Zomato.Web.Services
             {
                 Apitype = SD.ApiType.GET,
                 Url = SD.CouponAPIBase + "/api/coupon/GetCouponById/" + id
-            });
+            }, true);
         }
 
         public async Task<ResponseDto?> UpdateCouponAsync(CouponDto couponDto)
@@ -74,7 +74,7 @@ namespace Zomato.Web.Services
                 Apitype = SD.ApiType.PUT,
                 Url = SD.CouponAPIBase + "/api/coupon/UpdateCoupon/",
                 Data = couponDto
-            });
+            }, true);
         }
     }
 }

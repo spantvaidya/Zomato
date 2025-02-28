@@ -41,7 +41,7 @@ namespace Zomato.Web.Controllers
             var response = await _authService.LoginAsync(loginDto);
             if (response == null || response.Result == null || response.IsSuccess == false)
             {
-                ModelState.AddModelError(string.Empty, response.Message);
+                TempData["error"]= "Invalid Credetials";
                 return View(loginDto);
             }
 

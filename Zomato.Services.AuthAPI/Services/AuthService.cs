@@ -87,8 +87,9 @@ namespace Zomato.Services.AuthAPI.Services
             }
             catch (Exception ex)
             {
-                return null;
+                
             }
+            return "Something went wrong";
         }
     }
 }

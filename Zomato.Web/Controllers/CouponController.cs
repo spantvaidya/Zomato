@@ -15,13 +15,22 @@ namespace Zomato.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var responseDto = await _couponService.GetAllCouponsAsync();
-            if (responseDto == null)
+            try
             {
-                return NotFound();
+                var responseDto = await _couponService.GetAllCouponsAsync();
+                if (responseDto == null || responseDto.Result == null)
+                {
+                    TempData["error"] = responseDto.Message;
+                    return RedirectToAction("Index","Home");
+                }
+                var coupons = JsonConvert.DeserializeObject<List<CouponDto>>(responseDto.Result.ToString());
+                return View(coupons);
             }
-            var coupons = JsonConvert.DeserializeObject<List<CouponDto>>(responseDto.Result.ToString());
-            return View(coupons);
+            catch (Exception ex) 
+            {
+                TempData["error"] = ex.Message;
+                return RedirectToAction(nameof(Index));
+            }           
         }
 
         public IActionResult Create()

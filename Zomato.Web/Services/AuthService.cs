@@ -18,7 +18,7 @@ namespace Zomato.Web.Services
                 Apitype = SD.ApiType.POST,
                 Url = SD.AuthAPIBase + "/api/auth/AssignRole",
                 Data = registerationDto
-            });
+            },true);
         }
 
         public async Task<ResponseDto?> LoginAsync(LoginDto loginDto)
@@ -28,7 +28,7 @@ namespace Zomato.Web.Services
                 Apitype = SD.ApiType.POST,
                 Url = SD.AuthAPIBase + "/api/auth/login",
                 Data = loginDto
-            });
+            }, true);
         }
 
         public async Task<ResponseDto?> RegisterAsync(RegisterationDto registerationDto)
@@ -38,7 +38,7 @@ namespace Zomato.Web.Services
                 Apitype = SD.ApiType.POST,
                 Url = SD.AuthAPIBase + "/api/auth/register",
                 Data = registerationDto
-            });
+            }, true);
         }
     }
 }

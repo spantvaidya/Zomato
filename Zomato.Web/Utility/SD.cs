@@ -10,8 +10,8 @@ namespace Zomato.Web.Utility
         }
         public static string CouponAPIBase { get; set; }
         public static string AuthAPIBase { get; set; }
-        public static string RoleAdmin = "Admin";
-        public static string RoleCustomer = "Customer";
-        public static string TokenCookie = "jwtToken";
+        public const string RoleAdmin = "Admin";
+        public const string RoleCustomer = "Customer";
+        public const string TokenCookie = "jwtToken";
     }
 }
