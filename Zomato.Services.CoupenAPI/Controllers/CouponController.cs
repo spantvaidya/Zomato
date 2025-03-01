@@ -4,12 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using Zomato.Services.CoupenAPI.Data;
 using Zomato.Services.CoupenAPI.Models;
 using Zomato.Services.CoupenAPI.Models.Dto;
+using Zomato.Services.CoupenAPI.Utility;
 
 namespace Zomato.Services.CoupenAPI.Controllers
 {
     [Route("api/coupon")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = SD.RoleAdmin)]
     public class CouponController : ControllerBase
     {
         private readonly AppDbContext _dbcontext;

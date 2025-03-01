@@ -1,13 +1,16 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Zomato.Services.ProductAPI.Data;
 using Zomato.Services.ProductAPI.Models;
 using Zomato.Services.ProductAPI.Models.Dto;
+using Zomato.Services.ProductAPI.Utility;
 
 namespace Zomato.Services.ProductAPI.Controllers
 {
     [Route("api/Product")]
     [ApiController]
+    [Authorize(Roles = SD.RoleAdmin)]
     public class ProductController : ControllerBase
     {
         private readonly AppDbContext _dbcontext;
