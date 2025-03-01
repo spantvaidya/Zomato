@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace Zomato.Services.ProductAPI.Models.Dto
 {
@@ -21,6 +22,7 @@ namespace Zomato.Services.ProductAPI.Models.Dto
         public string Category { get; set; }
 
         [Url]
+        [ValidateNever]
         public string ImageUrl { get; set; }
     }
 }

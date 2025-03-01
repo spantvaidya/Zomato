@@ -48,9 +48,10 @@ namespace Zomato.Web.Controllers
                 {
                     var responseDto = await _ProductService.CreateProductAsync(ProductDto);
 
-                    if (responseDto == null)
+                    if (responseDto == null || responseDto.IsSuccess == false)
                     {
-                        return NotFound();
+                        TempData["error"] = responseDto.Message;
+                        return View(ProductDto);
                     }
                     TempData["success"] = "Product Added Succesfully";
                     return RedirectToAction(nameof(Index));

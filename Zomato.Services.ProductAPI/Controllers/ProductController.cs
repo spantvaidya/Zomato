@@ -110,9 +110,10 @@ namespace Zomato.Services.ProductAPI.Controllers
             }
             catch (Exception ex)
             {
-                _responseDto.Message = ex.InnerException.Message;
-                _responseDto.Message = "failure";
+                _responseDto.Message = ex.InnerException?.Message ?? ex.Message;
                 _responseDto.IsSuccess = false;
+                _responseDto.StatusCode = StatusCodes.Status500InternalServerError;
+                return StatusCode(_responseDto.StatusCode, _responseDto);
             }
 
             return _responseDto;

@@ -22,6 +22,6 @@ namespace Zomato.Services.ProductAPI.Models
         public string Category { get; set; }
 
         [Url]
-        public string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; }
     }
 }

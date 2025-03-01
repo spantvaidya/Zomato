@@ -41,8 +41,14 @@ namespace Zomato.Web.Services
 
                 HttpResponseMessage response = await client.SendAsync(responseMessage.RequestMessage);
                 if(response == null)
-                {
+                {             
                     return new ResponseDto { StatusCode = 500, Message = "Internal Server Error", IsSuccess = false };
+                }
+                else if(response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                {
+                    var apiContent = await response.Content.ReadAsStringAsync();
+                    var apiResponse = JsonConvert.DeserializeObject<ResponseDto>(apiContent);
+                    return new ResponseDto { StatusCode = 500, Message = apiResponse.Message, IsSuccess = false };
                 }
                 else if(response.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
@@ -58,7 +64,9 @@ namespace Zomato.Web.Services
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
                 {
-                    return new ResponseDto { StatusCode = 400, Message = "Bad Request", IsSuccess = false };
+                    var apiContent = await response.Content.ReadAsStringAsync();
+                    var apiResponse = JsonConvert.DeserializeObject<ResponseDto>(apiContent);
+                    return new ResponseDto { StatusCode = 400, Message = apiResponse.Message, IsSuccess = false };
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
