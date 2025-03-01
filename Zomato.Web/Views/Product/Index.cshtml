@@ -1,4 +1,5 @@
-﻿@model IEnumerable<ProductDto>
+﻿@using Zomato.Web.Utility
+@model IEnumerable<ProductDto>
 <div class="card shadow border-0 mt-4">
     <div class="card-header bg-secondary bg-gradient ml-0 py-3">
         <div class="row">
@@ -8,26 +9,31 @@
         </div>
     </div>
     <div class="card-body p-4">
-        <div class="row pb-3">
-            <div class="col-6">
+        @if (User.IsInRole(SD.RoleAdmin))
+        {
+            <div class="row pb-3">
+                <div class="col-6">
+                </div>
+                <div class="col-6 text-end">
+                    <a asp-action="Create" asp-controller="Product" class="btn btn-outline-primary"><i class="bi bi-plus-square"></i> Create New Product</a>
+                </div>
             </div>
-            <div class="col-6 text-end">
-                <a asp-action="Create" asp-controller="Product" class="btn btn-outline-primary"><i class="bi bi-plus-square"></i> Create New Product</a>
-            </div>
-        </div>
+        }
+
         <form method="post">
             <table class="table">
                 <thead>
                     <tr>
                         <th>
-                            Product Code
+                            Product
                         </th>
                         <th>
-                            Discount Amount
+                            Description
                         </th>
                         <th>
-                            Minimum Amount
+                            Price/Unit
                         </th>
+                        <th>Category</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -48,13 +54,16 @@
                                     @Product.Category
                                 </td>
                                 <td>
-                                    <a class="btn btn-success" asp-action="Update" asp-route-productId="@Product.ProductId">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <button class="btn btn-danger" asp-action="Delete" asp-route-productId="@Product.ProductId"
-                                            onclick="return confirm('Are you sure you want to delete this?');">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
+                                    @if (User.IsInRole(SD.RoleAdmin))
+                                    {
+                                        <a class="btn btn-success" asp-action="Update" asp-route-productId="@Product.ProductId">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <button class="btn btn-danger" asp-action="Delete" asp-route-productId="@Product.ProductId"
+                                                onclick="return confirm('Are you sure you want to delete this?');">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    }
                                 </td>
                             </tr>
                         }

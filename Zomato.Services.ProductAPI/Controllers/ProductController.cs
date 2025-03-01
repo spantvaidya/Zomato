@@ -10,12 +10,12 @@ namespace Zomato.Services.ProductAPI.Controllers
 {
     [Route("api/Product")]
     [ApiController]
-    [Authorize(Roles = SD.RoleAdmin)]
     public class ProductController : ControllerBase
     {
         private readonly AppDbContext _dbcontext;
         private readonly ResponseDto _responseDto;
         private readonly IMapper _mapper;
+
         public ProductController(AppDbContext dbContext, IMapper mapper)
         {
             _dbcontext = dbContext;
@@ -23,6 +23,7 @@ namespace Zomato.Services.ProductAPI.Controllers
             _mapper = mapper;
         }
         [HttpGet]
+        [Authorize]
         public object GetProducts()
         {
             var objProducts = _dbcontext.Products.ToList();
@@ -32,6 +33,7 @@ namespace Zomato.Services.ProductAPI.Controllers
 
         [HttpGet]
         [Route("GetProductById/{id}")]
+        [Authorize]
         public object GetProductById(int id)
         {
             try
@@ -52,6 +54,7 @@ namespace Zomato.Services.ProductAPI.Controllers
 
         [HttpGet]
         [Route("GetProductByName/{name}")]
+        [Authorize]
         public object GetProductByName(string name)
         {
             try
@@ -72,6 +75,7 @@ namespace Zomato.Services.ProductAPI.Controllers
 
         [HttpGet]
         [Route("GetProductByCategory/{Category}")]
+        [Authorize]
         public object GetProductByCategory(string Category)
         {
             try
@@ -92,6 +96,7 @@ namespace Zomato.Services.ProductAPI.Controllers
 
         [HttpPost]
         [Route("AddProduct")]
+        [Authorize(Roles = SD.RoleAdmin)]
         public object AddProduct([FromBody] ProductDto ProductDto)
         {
             try
@@ -115,6 +120,7 @@ namespace Zomato.Services.ProductAPI.Controllers
 
         [HttpPut]
         [Route("UpdateProduct")]
+        [Authorize(Roles = SD.RoleAdmin)]
         public object UpdateProduct([FromBody] ProductDto ProductDto)
         {
             try
@@ -148,6 +154,7 @@ namespace Zomato.Services.ProductAPI.Controllers
 
         [HttpPost]
         [Route("DeleteProduct/{Id}")]
+        [Authorize(Roles = SD.RoleAdmin)]
         public object DeleteProduct(int Id)
         {
             try
