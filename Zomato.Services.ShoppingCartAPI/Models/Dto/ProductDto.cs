@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations;
 
-namespace Zomato.Web.Models
+namespace Zomato.Services.CartAPI.Models.Dto
 {
     public class ProductDto
     {
@@ -23,8 +23,6 @@ namespace Zomato.Web.Models
 
         [Url]
         [ValidateNever]
-        public string? ImageUrl { get; set; }
-        [Range(1, 100)]
-        public int Count { get; set; } = 1;
+        public string ImageUrl { get; set; }
     }
 }

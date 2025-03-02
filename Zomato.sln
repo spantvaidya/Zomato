@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zomato.Services.AuthAPI", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zomato.Services.ProductAPI", "Zomato.Services.ProductAPI\Zomato.Services.ProductAPI.csproj", "{48E1F7DB-E985-4FC6-88D8-6ED4FB87473A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zomato.Services.CartAPI", "Zomato.Services.ShoppingCartAPI\Zomato.Services.CartAPI.csproj", "{4C2A9B69-16D8-4DD2-82F3-C07E2785B800}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,10 @@ Global
 		{48E1F7DB-E985-4FC6-88D8-6ED4FB87473A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48E1F7DB-E985-4FC6-88D8-6ED4FB87473A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{48E1F7DB-E985-4FC6-88D8-6ED4FB87473A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C2A9B69-16D8-4DD2-82F3-C07E2785B800}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C2A9B69-16D8-4DD2-82F3-C07E2785B800}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C2A9B69-16D8-4DD2-82F3-C07E2785B800}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C2A9B69-16D8-4DD2-82F3-C07E2785B800}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -50,5 +56,6 @@ Global
 		{830AC9D2-6A31-42C7-9BD3-2F0AB08F9F50} = {AA2998EA-E334-4F87-8351-5E906D961A00}
 		{812C810E-B868-473C-B82A-F0EDB0E72D28} = {DA18366E-99B4-4810-9D93-1319C618A202}
 		{48E1F7DB-E985-4FC6-88D8-6ED4FB87473A} = {DA18366E-99B4-4810-9D93-1319C618A202}
+		{4C2A9B69-16D8-4DD2-82F3-C07E2785B800} = {DA18366E-99B4-4810-9D93-1319C618A202}
 	EndGlobalSection
 EndGlobal

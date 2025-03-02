@@ -1,22 +1,35 @@
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Diagnostics;
 using Zomato.Web.Models;
+using Zomato.Web.Services.IService;
 
 namespace Zomato.Web.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController(IProductService productService) : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IProductService _productService = productService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public async Task<IActionResult> Index()
         {
-            _logger = logger;
+            var response = await _productService.GetAllProductsAsync();
+            var products = JsonConvert.DeserializeObject<List<ProductDto>>(response.Result.ToString());
+            return View(products);
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> ProductDetails(int productId)
         {
-
-            return View();
+            var response = await _productService.GetProductByIdAsync(productId);
+            if(response.IsSuccess)
+            {
+                var product = JsonConvert.DeserializeObject<ProductDto>(response.Result.ToString());
+                return View(product);
+            }
+            else
+            {
+                TempData["error"] = response.Message;
+                return RedirectToAction("Index");
+            }           
         }
 
         public IActionResult Privacy()

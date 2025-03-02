@@ -23,7 +23,7 @@ namespace Zomato.Services.ProductAPI.Controllers
             _mapper = mapper;
         }
         [HttpGet]
-        [Authorize]
+        //[Authorize]
         public object GetProducts()
         {
             var objProducts = _dbcontext.Products.ToList();
