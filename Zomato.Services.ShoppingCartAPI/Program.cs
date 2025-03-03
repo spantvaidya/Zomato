@@ -44,10 +44,14 @@ builder.Services.AddSwaggerGen(option =>
     });
 });
 
-//Add HttpClient for calling Product Microservice
+//Add HttpClient for calling Product, Coupon Microservices
 builder.Services.AddHttpClient("Product", x => x.BaseAddress =
 new Uri(builder.Configuration.GetSection("ServiceUrls:ProductAPI").Value));
+builder.Services.AddHttpClient("Coupon", x => x.BaseAddress =
+new Uri(builder.Configuration.GetSection("ServiceUrls:CouponAPI").Value));
+
 builder.Services.AddScoped<IProductService,ProductService>();
+builder.Services.AddScoped<ICouponService, CouponService>();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddDbContext<AppDbContext>(option =>
 option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

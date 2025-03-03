@@ -10,7 +10,6 @@ namespace Zomato.Services.CoupenAPI.Controllers
 {
     [Route("api/coupon")]
     [ApiController]
-    [Authorize(Roles = SD.RoleAdmin)]
     public class CouponController : ControllerBase
     {
         private readonly AppDbContext _dbcontext;
@@ -56,8 +55,8 @@ namespace Zomato.Services.CoupenAPI.Controllers
         {
             try
             {
-                var coupen = _dbcontext.Coupons.Where(x => x.CouponCode.ToLower().Contains(code)).ToList();
-                _responseDto.Result = _mapper.Map<List<CouponDto>>(coupen);
+                var coupen = _dbcontext.Coupons.FirstOrDefault(x => x.CouponCode.ToLower() == code.ToLower());
+                _responseDto.Result = _mapper.Map<CouponDto>(coupen);
                 return _responseDto;
             }
             catch (Exception ex)
@@ -72,6 +71,7 @@ namespace Zomato.Services.CoupenAPI.Controllers
 
         [HttpPost]
         [Route("AddCoupon")]
+        [Authorize(Roles = SD.RoleAdmin)]
         public object AddCoupon([FromBody] CouponDto coupenDto)
         {
             try
@@ -95,6 +95,7 @@ namespace Zomato.Services.CoupenAPI.Controllers
 
         [HttpPut]
         [Route("UpdateCoupon")]
+        [Authorize(Roles = SD.RoleAdmin)]
         public object UpdateCoupon([FromBody] CouponDto coupenDto)
         {
             try
@@ -128,6 +129,7 @@ namespace Zomato.Services.CoupenAPI.Controllers
 
         [HttpPost]
         [Route("DeleteCoupon/{Id}")]
+        [Authorize(Roles = SD.RoleAdmin)]
         public object DeleteCoupon(int Id)
         {
             try

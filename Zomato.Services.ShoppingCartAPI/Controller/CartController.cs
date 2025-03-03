@@ -16,13 +16,16 @@ namespace Zomato.Services.CartAPI.Controller
         private readonly AppDbContext _dbContext;
         private readonly ResponseDto _responseDto;
         private readonly IProductService _productService;
+        private readonly ICouponService _couponService;
 
-        public CartController(IMapper mapper, AppDbContext dbContext, IProductService productService)
+        public CartController(IMapper mapper, AppDbContext dbContext, IProductService productService,
+            ICouponService couponService)
         {
             _mapper = mapper;
             _dbContext = dbContext;
             _responseDto = new ResponseDto();
             _productService = productService;
+            _couponService = couponService;
         }
 
         [HttpGet("GetCart/{userId}")]
@@ -40,12 +43,24 @@ namespace Zomato.Services.CartAPI.Controller
                         .ToListAsync()
                     );
 
+                //Get Products associated with the Cart
                 IEnumerable<ProductDto> products = await _productService.GetAllProducts();
+
+                //Get Coupons associated with the Cart
+                CouponDto coupon = await _couponService.GetCouponByCode(cartHeader.CouponCode);
+
+                if (coupon != null)
+                    cartHeader.CouponCode = coupon.CouponCode;
 
                 foreach (var item in cartDetails)
                 {
-                    item.ProductDto = products.FirstOrDefault(x => x.ProductId == item.ProductId);
-                    cartHeader.CartTotal += item.ProductDto.Price * item.Count;
+                    item.ProductDto = products.FirstOrDefault(x => x.ProductId == item.ProductId);                  
+                    var itemTotal = item.ProductDto.Price * item.Count;
+                    if (coupon != null)
+                    {
+                        itemTotal = itemTotal - (double)coupon.DiscountAmount;
+                    }
+                    cartHeader.CartTotal += itemTotal;
                 }
 
                 CartDto cartDto = new CartDto
@@ -132,8 +147,8 @@ namespace Zomato.Services.CartAPI.Controller
             return _responseDto;
         }
 
-        [HttpPost("Remove")]
-        public async Task<ResponseDto> Remove([FromBody] int cartDetailsId)
+        [HttpPost("ClearCart")]
+        public async Task<ResponseDto> ClearCart([FromBody] int cartDetailsId)
         {
             try
             {
@@ -156,6 +171,25 @@ namespace Zomato.Services.CartAPI.Controller
                 _responseDto.Message = "Operation Successful";
                 _responseDto.Result = true;
                 _responseDto.StatusCode = StatusCodes.Status200OK;
+            }
+            catch (Exception ex)
+            {
+                _responseDto.IsSuccess = false;
+                _responseDto.Message = ex.Message;
+                _responseDto.StatusCode = StatusCodes.Status500InternalServerError;
+            }
+            return _responseDto;
+        }
+        [HttpPost("ApplyCoupon")]
+        public async Task<object> ApplyCoupon([FromBody] CartDto cartDto)
+        {
+            try
+            {
+                var cartFromDb = await _dbContext.CartHeaders.
+                    FirstOrDefaultAsync(x => x.UserId == cartDto.CartHeader.UserId);
+                cartFromDb.CouponCode = cartDto.CartHeader.CouponCode;
+                await _dbContext.SaveChangesAsync();
+                _responseDto.Result = true;
             }
             catch (Exception ex)
             {
