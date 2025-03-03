@@ -5,6 +5,8 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using Zomato.Services.CartAPI;
 using Zomato.Services.CartAPI.Data;
+using Zomato.Services.CartAPI.Service;
+using Zomato.Services.CartAPI.Service.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +44,10 @@ builder.Services.AddSwaggerGen(option =>
     });
 });
 
+//Add HttpClient for calling Product Microservice
+builder.Services.AddHttpClient("Product", x => x.BaseAddress =
+new Uri(builder.Configuration.GetSection("ServiceUrls:ProductAPI").Value));
+builder.Services.AddScoped<IProductService,ProductService>();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddDbContext<AppDbContext>(option =>
 option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

@@ -14,7 +14,7 @@ namespace Zomato.Services.CartAPI.Models
 
         public int ProductId { get; set; }
         [NotMapped]
-        public ProductDto ProductDto { get; set; }
-        public int Count { get; set; }
+        public ProductDto? Product { get; set; }
+        public int Count { get; set; }       
     }
 }

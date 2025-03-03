@@ -1,4 +1,6 @@
-﻿namespace Zomato.Services.CartAPI.Models.Dto
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Zomato.Services.CartAPI.Models.Dto
 {
     public class CartDetailsDto
     {

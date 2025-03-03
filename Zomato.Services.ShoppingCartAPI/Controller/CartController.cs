@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Zomato.Services.CartAPI.Data;
 using Zomato.Services.CartAPI.Models;
 using Zomato.Services.CartAPI.Models.Dto;
+using Zomato.Services.CartAPI.Service.Interface;
 
 namespace Zomato.Services.CartAPI.Controller
 {
@@ -14,12 +15,14 @@ namespace Zomato.Services.CartAPI.Controller
         private readonly IMapper _mapper;
         private readonly AppDbContext _dbContext;
         private readonly ResponseDto _responseDto;
+        private readonly IProductService _productService;
 
-        public CartController(IMapper mapper, AppDbContext dbContext)
+        public CartController(IMapper mapper, AppDbContext dbContext, IProductService productService)
         {
             _mapper = mapper;
             _dbContext = dbContext;
             _responseDto = new ResponseDto();
+            _productService = productService;
         }
 
         [HttpGet("GetCart/{userId}")]
@@ -36,6 +39,14 @@ namespace Zomato.Services.CartAPI.Controller
                         await _dbContext.CartDetails.Where(x => x.CartHeaderId == cartHeader.CartHeaderId)
                         .ToListAsync()
                     );
+
+                IEnumerable<ProductDto> products = await _productService.GetAllProducts();
+
+                foreach (var item in cartDetails)
+                {
+                    item.ProductDto = products.FirstOrDefault(x => x.ProductId == item.ProductId);
+                    cartHeader.CartTotal += item.ProductDto.Price * item.Count;
+                }
 
                 CartDto cartDto = new CartDto
                 {
