@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using Zomato.MessageBus;
 using Zomato.Services.CartAPI;
 using Zomato.Services.CartAPI.Data;
 using Zomato.Services.CartAPI.Service;
@@ -52,6 +53,7 @@ new Uri(builder.Configuration.GetSection("ServiceUrls:CouponAPI").Value));
 
 builder.Services.AddScoped<IProductService,ProductService>();
 builder.Services.AddScoped<ICouponService, CouponService>();
+builder.Services.AddScoped<IMessageBus, MessageBus>();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddDbContext<AppDbContext>(option =>
 option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

@@ -8,5 +8,6 @@ namespace Zomato.Web.Services.IService
         Task<ResponseDto?> UpsertCartAsync(CartDto CartDto);
         Task<ResponseDto?> ClearCartAsync(int cartDetailsId);
         Task<ResponseDto?> ApplyCouponAsync(CartDto CartDto);
+        Task<ResponseDto?> EmailCart(CartDto CartDto);
     }
 }

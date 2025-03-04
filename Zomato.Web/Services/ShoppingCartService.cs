@@ -28,6 +28,16 @@ namespace Zomato.Web.Services
             }, true);
         }
 
+        public async Task<ResponseDto?> EmailCart(CartDto CartDto)
+        {
+            return await _baseService.SendAsync(new RequestDto
+            {
+                Apitype = SD.ApiType.POST,
+                Data = CartDto,
+                Url = SD.CartAPIBase + "/api/cart/EmailCartRequest/"
+            }, true);
+        }
+
         public async Task<ResponseDto?> GetCartByUserIdAsync(string userId)
         {
             return await _baseService.SendAsync(new RequestDto

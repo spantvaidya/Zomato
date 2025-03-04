@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Zomato.MessageBus;
 using Zomato.Services.CartAPI.Data;
 using Zomato.Services.CartAPI.Models;
 using Zomato.Services.CartAPI.Models.Dto;
@@ -17,15 +18,19 @@ namespace Zomato.Services.CartAPI.Controller
         private readonly ResponseDto _responseDto;
         private readonly IProductService _productService;
         private readonly ICouponService _couponService;
+        private readonly IMessageBus _messageBus;
+        private readonly IConfiguration _configuration;
 
         public CartController(IMapper mapper, AppDbContext dbContext, IProductService productService,
-            ICouponService couponService)
+            ICouponService couponService, IMessageBus messageBus, IConfiguration configuration)
         {
             _mapper = mapper;
             _dbContext = dbContext;
             _responseDto = new ResponseDto();
             _productService = productService;
             _couponService = couponService;
+            _messageBus = messageBus;
+            _configuration = configuration;
         }
 
         [HttpGet("GetCart/{userId}")]
@@ -190,6 +195,24 @@ namespace Zomato.Services.CartAPI.Controller
                 cartFromDb.CouponCode = cartDto.CartHeader.CouponCode;
                 await _dbContext.SaveChangesAsync();
                 _responseDto.Result = true;
+            }
+            catch (Exception ex)
+            {
+                _responseDto.IsSuccess = false;
+                _responseDto.Message = ex.Message;
+                _responseDto.StatusCode = StatusCodes.Status500InternalServerError;
+            }
+            return _responseDto;
+        }
+        [HttpPost("EmailCartRequest")]
+        public async Task<object> EmailCartRequest([FromBody] CartDto cartDto)
+        {
+            try
+            {
+                //Send Email
+                await _messageBus.PublishMessage(cartDto, _configuration.GetSection("TopicAndQueueNames:EmailShoppingCart").Value);
+                _responseDto.Result = true;
+                _responseDto.StatusCode = StatusCodes.Status200OK;
             }
             catch (Exception ex)
             {

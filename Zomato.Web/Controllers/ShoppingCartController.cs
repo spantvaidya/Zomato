@@ -15,10 +15,10 @@ namespace Zomato.Web.Controllers
         [Authorize]
         public async Task<IActionResult> CartIndex()
         {
-            return View(await LoadCartDto());
+            return View(await LoadCartDtoByLoggedInUserAsync());
         }
 
-        private async Task<CartDto> LoadCartDto()
+        private async Task<CartDto> LoadCartDtoByLoggedInUserAsync()
         {
             var userId = User.Claims.Where(c => c.Type == JwtRegisteredClaimNames.Sub)?.FirstOrDefault()?.Value;
             var response = await _cartService.GetCartByUserIdAsync(userId);
@@ -62,6 +62,21 @@ namespace Zomato.Web.Controllers
             if (response != null && response.IsSuccess)
             {
                 TempData["Success"] = "Coupon removed successfully";
+                return RedirectToAction(nameof(CartIndex));
+            }
+            return View();
+        }
+
+        [HttpPost("EmailCart")]
+        public async Task<IActionResult> EmailCart(CartDto cartDto)
+        {
+            CartDto cart = await LoadCartDtoByLoggedInUserAsync();
+            cart.CartHeader.Email = User.Claims.Where(c => c.Type == JwtRegisteredClaimNames.Email)?.FirstOrDefault()?.Value;
+
+            var response = await _cartService.EmailCart(cart);
+            if (response != null && response.IsSuccess)
+            {
+                TempData["Success"] = "Email will be sent Shortly";
                 return RedirectToAction(nameof(CartIndex));
             }
             return View();
