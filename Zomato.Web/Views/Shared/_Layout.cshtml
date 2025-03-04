@@ -45,6 +45,12 @@
                                 </li>
                             </ul>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="ShoppingCart" asp-action="CartIndex">
+                                &nbsp; <i class="bi bi-cart fs-5"></i>
+                            </a>
+                        </li>
+
                     </ul>
                     <ul class="navbar-nav">
                         @if (!User.Identity.IsAuthenticated)

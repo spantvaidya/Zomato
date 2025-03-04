@@ -1,32 +1,32 @@
 ﻿@model IEnumerable<ProductDto>
 
-<form>
-    <div class="container row">
-        @foreach (var item in Model)
-        {
-            <div class="col-4">
-                <div class="p-0 my-3 border rounded">
-                    <div class="card">
-                        <h3 class="card-title text-white-50 text-center py-2">@item.Name</h3>
-                        <img src="https://placehold.co/600x400" class="card-img-top">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between py-2">
-                                <span class="text-danger" style="font-size:20px;">XX</span>
-                                <span class="badge bg-warning text-white p-2">@item.Category</span>
-                            </div>
-                            <p class="card-text">@item.Description</p>
-                            <div class="row">
-                                <div class="col">
-                                    <a asp-action="ProductDetails" asp-controller="Home"
-                                       asp-route-productId="@item.ProductId"
-                                    class="btn btn-success form-control">Details</a>
-                                </div>
+<div class="container row">
+    @foreach (var item in Model)
+    {
+        <div class="col-4">
+            <div class="p-0 my-3 border rounded">
+                <div class="card">
+                    <h3 class="card-title text-white-50 text-center py-2">@item.Name</h3>
+                    <img src="https://placehold.co/600x400" class="card-img-top">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between py-2">
+                            <span class="text-danger" style="font-size:20px;">
+                                @item.Price.ToString("c", System.Globalization.CultureInfo.GetCultureInfo("hi-IN"))
+                            </span>
+                            <span class="badge bg-warning text-white p-2">@item.Category</span>
+                        </div>
+                        <p class="card-text">@item.Description</p>
+                        <div class="row">
+                            <div class="col">
+                                <a asp-action="ProductDetails" asp-controller="Home"
+                                   asp-route-productId="@item.ProductId"
+                                   class="btn btn-success form-control">Details</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        }
-    </div>
-</form>
+        </div>
+    }
+</div>
 

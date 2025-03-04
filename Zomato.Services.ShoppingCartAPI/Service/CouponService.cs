@@ -16,7 +16,7 @@ namespace Zomato.Services.CartAPI.Service
             var response = await client.GetAsync($"/api/Coupon/GetCouponByCode/" + couponCode);
             var apiContent = await response.Content.ReadAsStringAsync();
             var apiResponse = JsonConvert.DeserializeObject<ResponseDto>(apiContent);
-            if (apiResponse.IsSuccess)
+            if (apiResponse != null && apiResponse.IsSuccess)
             {
                 Coupon = JsonConvert.DeserializeObject<CouponDto>(Convert.ToString(apiResponse.Result));
             }

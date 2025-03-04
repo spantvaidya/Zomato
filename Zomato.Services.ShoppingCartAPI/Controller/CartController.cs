@@ -47,20 +47,20 @@ namespace Zomato.Services.CartAPI.Controller
                 IEnumerable<ProductDto> products = await _productService.GetAllProducts();
 
                 //Get Coupons associated with the Cart
-                CouponDto coupon = await _couponService.GetCouponByCode(cartHeader.CouponCode);
-
-                if (coupon != null)
-                    cartHeader.CouponCode = coupon.CouponCode;
+                CouponDto coupon = await _couponService.GetCouponByCode(cartHeader.CouponCode ?? "");
 
                 foreach (var item in cartDetails)
                 {
-                    item.ProductDto = products.FirstOrDefault(x => x.ProductId == item.ProductId);                  
-                    var itemTotal = item.ProductDto.Price * item.Count;
-                    if (coupon != null)
-                    {
-                        itemTotal = itemTotal - (double)coupon.DiscountAmount;
-                    }
+                    item.ProductDto = products.FirstOrDefault(x => x.ProductId == item.ProductId);
+                    var itemTotal = item.ProductDto.Price * item.Count;            
+                       
                     cartHeader.CartTotal += itemTotal;
+                }
+                if (coupon != null && !String.IsNullOrEmpty(coupon.CouponCode))
+                {
+                    cartHeader.CouponCode = coupon.CouponCode;
+                    cartHeader.Discount = (double)coupon.DiscountAmount;
+                    cartHeader.CartTotal = cartHeader.CartTotal - (double)coupon.DiscountAmount;
                 }
 
                 CartDto cartDto = new CartDto
@@ -181,7 +181,7 @@ namespace Zomato.Services.CartAPI.Controller
             return _responseDto;
         }
         [HttpPost("ApplyCoupon")]
-        public async Task<object> ApplyCoupon([FromBody] CartDto cartDto)
+        public async Task<ResponseDto> ApplyCoupon([FromBody] CartDto cartDto)
         {
             try
             {
