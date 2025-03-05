@@ -30,10 +30,16 @@ builder.Services.AddScoped<ITokenGenerator, TokenGenerator>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
+app.UseSwagger();
+if (app.Environment.IsDevelopment()) 
     app.UseSwaggerUI();
+else
+{
+    app.UseSwaggerUI(x =>
+    {
+        x.SwaggerEndpoint("/swagger/v1/swagger.json", "AuthAPI");
+        x.RoutePrefix = string.Empty;
+    });
 }
 
 app.UseHttpsRedirection();

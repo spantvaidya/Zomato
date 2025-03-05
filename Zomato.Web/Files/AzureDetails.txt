@@ -1,0 +1,4 @@
+﻿Azure SQL DB details:
+
+Server Admin login - sqladmin
+pwd - Admin@123

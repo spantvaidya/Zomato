@@ -88,10 +88,16 @@ builder.Services.AddAuthorization();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseSwagger();
 if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
     app.UseSwaggerUI();
+else
+{
+    app.UseSwaggerUI(x =>
+    {
+        x.SwaggerEndpoint("/swagger/v1/swagger.json", "AuthAPI");
+        x.RoutePrefix = string.Empty;
+    });
 }
 
 app.UseHttpsRedirection();

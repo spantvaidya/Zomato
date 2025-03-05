@@ -10,6 +10,7 @@ namespace Zomato.Services.CoupenAPI.Controllers
 {
     [Route("api/coupon")]
     [ApiController]
+    [Authorize]
     public class CouponController : ControllerBase
     {
         private readonly AppDbContext _dbcontext;

@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zomato.Services.CartAPI", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zomato.MessageBus", "MessageBus\Zomato.MessageBus.csproj", "{08BE5AA4-BF55-424C-8E3F-BC4D0A9FBCAE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zomato.GatewaySolution", "Zomato.GatewaySolution\Zomato.GatewaySolution.csproj", "{6BF9B210-4D35-4CF0-A565-C60950AA87B4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,10 @@ Global
 		{08BE5AA4-BF55-424C-8E3F-BC4D0A9FBCAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{08BE5AA4-BF55-424C-8E3F-BC4D0A9FBCAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{08BE5AA4-BF55-424C-8E3F-BC4D0A9FBCAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BF9B210-4D35-4CF0-A565-C60950AA87B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BF9B210-4D35-4CF0-A565-C60950AA87B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BF9B210-4D35-4CF0-A565-C60950AA87B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BF9B210-4D35-4CF0-A565-C60950AA87B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -64,5 +70,6 @@ Global
 		{48E1F7DB-E985-4FC6-88D8-6ED4FB87473A} = {DA18366E-99B4-4810-9D93-1319C618A202}
 		{4C2A9B69-16D8-4DD2-82F3-C07E2785B800} = {DA18366E-99B4-4810-9D93-1319C618A202}
 		{08BE5AA4-BF55-424C-8E3F-BC4D0A9FBCAE} = {C6E3D3AF-AD4B-41A0-BA73-27F9CA9BE17B}
+		{6BF9B210-4D35-4CF0-A565-C60950AA87B4} = {21BD3C0A-395E-4EDB-BD5E-2325B6400A74}
 	EndGlobalSection
 EndGlobal
