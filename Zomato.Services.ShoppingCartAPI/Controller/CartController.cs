@@ -210,7 +210,7 @@ namespace Zomato.Services.CartAPI.Controller
             try
             {
                 //Send Email
-                await _messageBus.PublishMessage(cartDto, _configuration.GetSection("TopicAndQueueNames:EmailShoppingCart").Value);
+                await _messageBus.PublishMessage(cartDto, _configuration.GetSection("TopicAndQueueNames:EmailShoppingCartQueue").Value);
                 _responseDto.Result = true;
                 _responseDto.StatusCode = StatusCodes.Status200OK;
             }
