@@ -3,6 +3,8 @@ using Zomato.Services.EmailAPI;
 using Zomato.Services.EmailAPI.Data;
 using Zomato.Services.EmailAPI.Extensions;
 using Zomato.Services.EmailAPI.Messaging;
+using Zomato.Services.EmailAPI.Services;
+using Zomato.Services.EmailAPI.Utility;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +19,18 @@ builder.Services.AddSingleton<IServiceBusConsumer, AzureServiceBusConsumer>();
 
 builder.Services.AddDbContext<AppDbContext>(option =>
 option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+optionsBuilder.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+builder.Services.AddSingleton(new EmailService(optionsBuilder.Options));
+
+//Set SMTP settings
+var emailSettings = builder.Configuration.GetSection("EmailSettings");
+
+SD.SMTPMailClientHost = builder.Configuration.GetSection("EmailSettings:tHost").Value;
+SD.SMTPMailClientPort = Convert.ToInt32(builder.Configuration.GetSection("EmailSettings:Port").Value);
+SD.EmailFrom = builder.Configuration.GetSection("EmailSettings:MailFromAdmin").Value;
+SD.EmailFromPassword = builder.Configuration.GetSection("EmailSettings:MailFromAdminPassword").Value;
 
 var app = builder.Build();
 

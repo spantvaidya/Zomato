@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System.Text;
 using Zomato.Services.EmailAPI.Models.Dto;
+using Zomato.Services.EmailAPI.Services;
 
 namespace Zomato.Services.EmailAPI.Messaging
 {
@@ -10,10 +11,11 @@ namespace Zomato.Services.EmailAPI.Messaging
         private readonly string serviceBusConnectionString;
         private readonly string emailCartQueue;
         private readonly IConfiguration _configuration;
+        private readonly EmailService _emailService;
 
         ServiceBusProcessor _emailCartprocessor;
 
-        public AzureServiceBusConsumer(IConfiguration configuration)
+        public AzureServiceBusConsumer(IConfiguration configuration, EmailService emailService)
         {
             _configuration = configuration;
             serviceBusConnectionString = _configuration.GetValue<string>("ServiceBusConnectionString");
@@ -21,7 +23,7 @@ namespace Zomato.Services.EmailAPI.Messaging
 
             var client = new ServiceBusClient(serviceBusConnectionString);
             _emailCartprocessor = client.CreateProcessor(emailCartQueue);
-
+            _emailService = emailService;
         }
 
         public async Task Start()
@@ -53,7 +55,7 @@ namespace Zomato.Services.EmailAPI.Messaging
                 //    Body = "Your cart is ready"
                 //};
                 //var emailService = new EmailService(_configuration);
-                //await emailService.SendEmail(email);
+                await _emailService.SendAndLogEmailAsync(objMessage);
 
                 await args.CompleteMessageAsync(args.Message);
             }
