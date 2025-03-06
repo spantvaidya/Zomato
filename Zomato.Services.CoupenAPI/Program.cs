@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using Zomato.Services.CoupenAPI;
 using Zomato.Services.CoupenAPI.Data;
+using Zomato.Services.CoupenAPI.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,30 +41,7 @@ builder.Services.AddSwaggerGen(option =>
     });
 });
 
-//Add Authentication
-var secret = builder.Configuration.GetSection("ApiSettings:Secret").Value;
-var key = Encoding.ASCII.GetBytes(secret);
-var audience = builder.Configuration.GetSection("ApiSettings:Audience").Value;
-var issuer = builder.Configuration.GetSection("ApiSettings:Issuer").Value;
-
-builder.Services.AddAuthentication(option =>
-{
-    option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(option =>
-{
-    option.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(key),
-        ValidateIssuer = true,
-        ValidIssuer = issuer,
-        ValidateAudience = true,
-        ValidAudience = audience
-    };
-});
-
+builder.AddAppAuthentication();
 builder.Services.AddAuthorization();
 
 builder.Services.AddAutoMapper(typeof(MappingConfig));
