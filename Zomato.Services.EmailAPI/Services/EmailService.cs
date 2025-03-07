@@ -43,21 +43,21 @@ namespace Zomato.Services.EmailAPI.Services
 
 
             //log email
-            if (await SendEmail(cartDto.CartHeader.Email, emailBody, "Cart Received"))
-                await LogEmail(emailBody, cartDto.CartHeader.Email??"");
+            await SendEmail(cartDto.CartHeader.Email, emailBody, "Cart Received");
+            await LogEmail(emailBody, cartDto.CartHeader.Email ?? "");
         }
 
-        public async Task SendAndLogRegisterUserEmailAsync(RegisterationDto registerationDto)
+        public async Task SendAndLogRegisterUserEmailAsync(string email)
         {
             StringBuilder stringBuilder = new StringBuilder();
 
-            stringBuilder.Append(RegisterEmailtemplate.GetRegisterUserEmailBody(registerationDto.Name));
+            stringBuilder.Append(RegisterEmailtemplate.GetRegisterUserEmailBody(email));
 
             var emailBody = stringBuilder.ToString();
 
             //log email
-            if (await SendEmail(registerationDto.Email, emailBody, "Welcome To Zomato"))
-                await LogEmail(emailBody, registerationDto.Email ?? "");
+            await SendEmail(email, emailBody, "Welcome To Zomato");
+            await LogEmail(emailBody, email ?? "");
         }
 
         private async Task<bool> SendEmail(string toEmail, string emailBody, string subject)
@@ -78,7 +78,7 @@ namespace Zomato.Services.EmailAPI.Services
                         Body = emailBody,
                         IsBodyHtml = true,
                     };
-                    mailMessage.To.Add(toEmail);                   
+                    mailMessage.To.Add(toEmail);
 
                     await client.SendMailAsync(mailMessage);
                 }
@@ -113,6 +113,5 @@ namespace Zomato.Services.EmailAPI.Services
                 return false;
             }
         }
-        
     }
 }

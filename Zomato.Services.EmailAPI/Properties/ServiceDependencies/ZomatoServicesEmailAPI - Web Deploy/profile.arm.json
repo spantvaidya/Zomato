@@ -21,7 +21,7 @@
     },
     "resourceName": {
       "type": "string",
-      "defaultValue": "ZomatoWeb20250305090654",
+      "defaultValue": "ZomatoServicesEmailAPI",
       "metadata": {
         "description": "Name of the main resource to be created by this template."
       }

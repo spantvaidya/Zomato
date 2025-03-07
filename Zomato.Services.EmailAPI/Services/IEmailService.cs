@@ -5,6 +5,6 @@ namespace Zomato.Services.EmailAPI.Services
     public interface IEmailService
     {
         Task SendAndLogEmailCartAsync(CartDto cartDto);
-        Task SendAndLogRegisterUserEmailAsync(RegisterationDto cartDto);
+        Task SendAndLogRegisterUserEmailAsync(string email);
     }
 }

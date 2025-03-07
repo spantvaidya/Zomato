@@ -56,7 +56,7 @@ namespace Zomato.Services.EmailAPI.Messaging
             //this is where you will receive a message
             var message = args.Message;
             var body = Encoding.UTF8.GetString(message.Body);
-            var objMessage = JsonConvert.DeserializeObject<RegisterationDto>(body);
+            var objMessage = JsonConvert.DeserializeObject<string>(body);
 
             try
             {

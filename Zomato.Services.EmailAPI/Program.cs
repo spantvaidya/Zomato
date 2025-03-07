@@ -35,10 +35,16 @@ SD.EmailFromPassword = builder.Configuration.GetSection("EmailSettings:MailFromA
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseSwagger();
 if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
     app.UseSwaggerUI();
+else
+{
+    app.UseSwaggerUI(x =>
+    {
+        x.SwaggerEndpoint("/swagger/v1/swagger.json", "Email API");
+        x.RoutePrefix = string.Empty;
+    });
 }
 
 app.UseHttpsRedirection();
