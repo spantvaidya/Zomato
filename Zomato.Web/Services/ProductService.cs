@@ -17,7 +17,8 @@ namespace Zomato.Web.Services
             {
                 Apitype = SD.ApiType.POST,
                 Url = SD.ProductAPIBase + "/api/Product/AddProduct",
-                Data = ProductDto
+                Data = ProductDto,
+                ContentType = SD.ContentType.MultipartFormData
             }, true);
         }
 
@@ -81,7 +82,8 @@ namespace Zomato.Web.Services
             {
                 Apitype = SD.ApiType.PUT,
                 Url = SD.ProductAPIBase + "/api/Product/UpdateProduct/",
-                Data = ProductDto
+                Data = ProductDto,
+                ContentType = SD.ContentType.MultipartFormData
             }, true);
         }
     }

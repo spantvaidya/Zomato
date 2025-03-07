@@ -1,8 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Text;
 using Zomato.Web.Models;
 using Zomato.Web.Services.IService;
+using Zomato.Web.Utility;
 
 namespace Zomato.Web.Services
 {
@@ -10,7 +12,7 @@ namespace Zomato.Web.Services
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ITokenProvider _tokenProvider;
-        public BaseService(IHttpClientFactory httpClientFactory,ITokenProvider tokenProvider)
+        public BaseService(IHttpClientFactory httpClientFactory, ITokenProvider tokenProvider)
         {
             _httpClientFactory = httpClientFactory;
             _tokenProvider = tokenProvider;
@@ -20,37 +22,58 @@ namespace Zomato.Web.Services
             try
             {
                 HttpClient client = _httpClientFactory.CreateClient("ZomatoAPI");
-                HttpResponseMessage responseMessage = new HttpResponseMessage();
-                //message.Headers.Add("Content-Type", "application/json");
-                responseMessage.Headers.Add("Accept", "application/json");
-
-                responseMessage.RequestMessage = new HttpRequestMessage
+                HttpRequestMessage message = new();
+                //responseMessage.Headers.Add("Accept", "application/json");
+                if (requestDto.ContentType == SD.ContentType.MultipartFormData)
                 {
-                    Method = new HttpMethod(requestDto.Apitype.ToString()),
-                    RequestUri = new Uri(requestDto.Url),
-                    Content = new StringContent(JsonConvert.SerializeObject(requestDto.Data), Encoding.UTF8, "application/json")
-                };
+                    message.Headers.Add("Accept", "*/*");
+                }
+                else
+                {
+                    message.Headers.Add("Accept", "application/json");
+                }
 
                 if (withBearer)
                 {
                     var token = _tokenProvider.GetToken();
-                    //HttpRequestMessage requestMessage = new HttpRequestMessage();
-                    //requestMessage.Headers.Add("Authorization",$"Bearer {token}");
-                    responseMessage.RequestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    message.Headers.Add("Authorization", $"Bearer {token}");
                 }
 
-                HttpResponseMessage response = await client.SendAsync(responseMessage.RequestMessage);
-                if(response == null)
-                {             
+                message.RequestUri = new Uri(requestDto.Url);
+                message.Method = new HttpMethod(requestDto.Apitype.ToString());
+                if (requestDto.ContentType == SD.ContentType.MultipartFormData)
+                {
+                    var content = new MultipartFormDataContent();
+                    foreach (var prop in requestDto.Data.GetType().GetProperties())
+                    {
+                        var value = prop.GetValue(requestDto.Data);
+                        if (value is FormFile)
+                        {
+                            var file = (FormFile)value;
+                            if (file != null)
+                            {
+                                content.Add(new StreamContent(file.OpenReadStream()), prop.Name, file.FileName);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    message.Content = new StringContent(JsonConvert.SerializeObject(requestDto.Data), Encoding.UTF8, "application/json");
+                }
+
+                HttpResponseMessage response = await client.SendAsync(message);
+                if (response == null)
+                {
                     return new ResponseDto { StatusCode = 500, Message = "Internal Server Error", IsSuccess = false };
                 }
-                else if(response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
                 {
                     var apiContent = await response.Content.ReadAsStringAsync();
                     var apiResponse = JsonConvert.DeserializeObject<ResponseDto>(apiContent);
                     return new ResponseDto { StatusCode = 500, Message = apiResponse.Message, IsSuccess = false };
                 }
-                else if(response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
                     return new ResponseDto { StatusCode = 404, Message = "Not Found", IsSuccess = false };
                 }
@@ -75,7 +98,7 @@ namespace Zomato.Web.Services
                     return apiResponse;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return new ResponseDto { StatusCode = 500, Message = "Internal Server Error", IsSuccess = false };
             }

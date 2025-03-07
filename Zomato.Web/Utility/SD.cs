@@ -15,5 +15,10 @@ namespace Zomato.Web.Utility
         public const string RoleAdmin = "ADMIN";
         public const string RoleCustomer = "CUSTOMER";
         public const string TokenCookie = "jwtToken";
+        public enum ContentType
+        {
+            Json,
+            MultipartFormData
+        }
     }
 }

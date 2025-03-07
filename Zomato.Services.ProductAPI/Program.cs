@@ -69,7 +69,7 @@ else
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseStaticFiles();
 app.MapControllers();
 //Add SeedData and Pending Migration at the start of the App
 ApplyMigration();
