@@ -41,7 +41,7 @@ namespace Zomato.Web.Controllers
             var response = await _authService.LoginAsync(loginDto);
             if (response == null || response.Result == null || response.IsSuccess == false)
             {
-                TempData["error"]= "Invalid Credetials";
+                TempData["error"] = "Invalid Credetials";
                 return View(loginDto);
             }
 
@@ -79,7 +79,10 @@ namespace Zomato.Web.Controllers
 
             if (responseAssignRole != null || responseAssignRole.IsSuccess == true)
             {
-                TempData["success"] = "Registration Successful";
+                TempData["success"] = "Registration Successfull";
+
+                await _authService.EmailRegsiteredUser(registerationDto.Email);
+
                 return RedirectToAction(nameof(Login), "Auth");
             }
 
@@ -102,21 +105,22 @@ namespace Zomato.Web.Controllers
 
             var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            identity.AddClaim(new Claim(JwtRegisteredClaimNames.Email, 
+            identity.AddClaim(new Claim(JwtRegisteredClaimNames.Email,
                  jwtToken.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Email).Value));
             identity.AddClaim(new Claim(JwtRegisteredClaimNames.Sub,
                  jwtToken.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sub).Value));
             identity.AddClaim(new Claim(JwtRegisteredClaimNames.Name,
                  jwtToken.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Name).Value));
 
-            identity.AddClaim(new Claim(ClaimTypes.Name, 
+            identity.AddClaim(new Claim(ClaimTypes.Name,
                 jwtToken.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Email).Value));
-            identity.AddClaim(new Claim(ClaimTypes.Role, 
+            identity.AddClaim(new Claim(ClaimTypes.Role,
                 jwtToken.Claims.FirstOrDefault(claim => claim.Type == "role").Value));
 
             var principal = new ClaimsPrincipal(identity);
 
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,principal);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
         }
+
     }
 }

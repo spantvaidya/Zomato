@@ -27,7 +27,7 @@ builder.Services.AddSingleton(new EmailService(optionsBuilder.Options));
 //Set SMTP settings
 var emailSettings = builder.Configuration.GetSection("EmailSettings");
 
-SD.SMTPMailClientHost = builder.Configuration.GetSection("EmailSettings:tHost").Value;
+SD.SMTPMailClientHost = builder.Configuration.GetSection("EmailSettings:Host").Value;
 SD.SMTPMailClientPort = Convert.ToInt32(builder.Configuration.GetSection("EmailSettings:Port").Value);
 SD.EmailFrom = builder.Configuration.GetSection("EmailSettings:MailFromAdmin").Value;
 SD.EmailFromPassword = builder.Configuration.GetSection("EmailSettings:MailFromAdminPassword").Value;

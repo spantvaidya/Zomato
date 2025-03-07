@@ -40,5 +40,21 @@ namespace Zomato.Web.Services
                 Data = registerationDto
             }, true);
         }
+
+        public async Task<bool> EmailRegsiteredUser(string userEmail)
+        {
+            var response = await _baseService.SendAsync(new RequestDto
+            {
+                Apitype = SD.ApiType.POST,
+                Data = userEmail,
+                Url = SD.AuthAPIBase + "/api/auth/EmailRegsiterUser/"
+            }, true);
+
+            if (response != null && response.Result != null)
+            {
+                return Convert.ToBoolean(response.IsSuccess);
+            }
+            return false;
+        }
     }
 }

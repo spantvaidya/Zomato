@@ -7,5 +7,6 @@ namespace Zomato.Web.Services.IService
         Task<ResponseDto?> RegisterAsync(RegisterationDto registerationDto);
         Task<ResponseDto?> LoginAsync(LoginDto loginDto);
         Task<ResponseDto?> AssignRoleAsync(RegisterationDto registerationDto);
+        Task<bool> EmailRegsiteredUser(string userEmail);
     }
 }

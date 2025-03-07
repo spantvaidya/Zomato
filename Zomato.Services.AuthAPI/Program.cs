@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Zomato.MessageBus;
 using Zomato.Services.AuthAPI.Data;
 using Zomato.Services.AuthAPI.Models;
 using Zomato.Services.AuthAPI.Services;
@@ -25,7 +26,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenGenerator, TokenGenerator>();
-
+builder.Services.AddScoped<IMessageBus, MessageBus>();
 
 var app = builder.Build();
 

@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Zomato.MessageBus;
 using Zomato.Services.AuthAPI.Models.Dto;
 using Zomato.Services.AuthAPI.Services.IService;
 using Zomato.Services.AuthPI.Models.Dto;
@@ -7,10 +9,12 @@ namespace Zomato.Services.AuthAPI.Controllers
 {
     [Route("api/auth")]
     [ApiController]
-    public class AuthAPIController(IAuthService authService) : ControllerBase
+    public class AuthAPIController(IAuthService authService, IMessageBus messageBus, IConfiguration configuration) : ControllerBase
     {
         private readonly IAuthService _authService = authService;
         protected ResponseDto _responseDto = new();
+        private readonly IMessageBus _messageBus = messageBus;
+        private readonly IConfiguration _configuration = configuration;
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterationDto registerationDto)
@@ -61,6 +65,25 @@ namespace Zomato.Services.AuthAPI.Controllers
             _responseDto.StatusCode = StatusCodes.Status200OK;
             _responseDto.Result = assignRole;
             return Ok(_responseDto);
+        }
+
+        [HttpPost("EmailRegsiterUser")]
+        public async Task<object> EmailRegsiterUser([FromBody] string userEmail)
+        {
+            try
+            {
+                //Send Email
+                await _messageBus.PublishMessage(userEmail, _configuration.GetSection("TopicAndQueueNames:EmailRegisterQueue").Value);
+                _responseDto.Result = true;
+                _responseDto.StatusCode = StatusCodes.Status200OK;
+            }
+            catch (Exception ex)
+            {
+                _responseDto.IsSuccess = false;
+                _responseDto.Message = ex.Message;
+                _responseDto.StatusCode = StatusCodes.Status500InternalServerError;
+            }
+            return _responseDto;
         }
     }
 }

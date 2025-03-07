@@ -19,7 +19,7 @@ namespace Zomato.Services.EmailAPI.Services
             this._dbOptions = dbOptions;
         }
 
-        public async Task SendAndLogEmailAsync(CartDto cartDto)
+        public async Task SendAndLogEmailCartAsync(CartDto cartDto)
         {
             StringBuilder stringBuilder = new StringBuilder();
 
@@ -43,11 +43,24 @@ namespace Zomato.Services.EmailAPI.Services
 
 
             //log email
-            if (await SendEmailCart(cartDto, emailBody))
-                await LogAndEmail(emailBody, cartDto.CartHeader.Email??"");
+            if (await SendEmail(cartDto.CartHeader.Email, emailBody, "Cart Received"))
+                await LogEmail(emailBody, cartDto.CartHeader.Email??"");
         }
 
-        private async Task<bool> SendEmailCart(CartDto cartDto, string emailBody)
+        public async Task SendAndLogRegisterUserEmailAsync(RegisterationDto registerationDto)
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+
+            stringBuilder.Append(RegisterEmailtemplate.GetRegisterUserEmailBody(registerationDto.Name));
+
+            var emailBody = stringBuilder.ToString();
+
+            //log email
+            if (await SendEmail(registerationDto.Email, emailBody, "Welcome To Zomato"))
+                await LogEmail(emailBody, registerationDto.Email ?? "");
+        }
+
+        private async Task<bool> SendEmail(string toEmail, string emailBody, string subject)
         {
             try
             {
@@ -61,11 +74,11 @@ namespace Zomato.Services.EmailAPI.Services
                     var mailMessage = new MailMessage
                     {
                         From = new MailAddress("sameer.pantvaidya@gmail.com"),
-                        Subject = "Your Cart Details",
+                        Subject = subject,
                         Body = emailBody,
                         IsBodyHtml = true,
                     };
-                    mailMessage.To.Add(cartDto.CartHeader.Email);
+                    mailMessage.To.Add(toEmail);                   
 
                     await client.SendMailAsync(mailMessage);
                 }
@@ -77,7 +90,8 @@ namespace Zomato.Services.EmailAPI.Services
                 return false;
             }
         }
-        private async Task<bool> LogAndEmail(string message, string Email)
+
+        private async Task<bool> LogEmail(string message, string Email)
         {
             try
             {
@@ -99,6 +113,6 @@ namespace Zomato.Services.EmailAPI.Services
                 return false;
             }
         }
-
+        
     }
 }
