@@ -211,6 +211,16 @@ namespace Zomato.Services.ProductAPI.Controllers
                 var Product = _dbcontext.Products.FirstOrDefault(x => x.ProductId == Id);
                 if (Product != null)
                 {
+                    //delete product image
+                    if (!string.IsNullOrEmpty(Product.ImageLocalPath))
+                    {
+                        var oldFilePathDirectory = Path.Combine(Directory.GetCurrentDirectory(), Product.ImageLocalPath);
+                        FileInfo oldFile = new FileInfo(oldFilePathDirectory);
+                        if (oldFile.Exists)
+                        {
+                            oldFile.Delete();
+                        }
+                    }
                     _dbcontext.Products.Remove(Product);
                     _dbcontext.SaveChanges();
                     _responseDto.Result = Ok();
