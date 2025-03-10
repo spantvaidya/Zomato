@@ -97,13 +97,35 @@ namespace Zomato.Services.ProductAPI.Controllers
         [HttpPost]
         [Route("AddProduct")]
         [Authorize(Roles = SD.RoleAdmin)]
-        public object AddProduct([FromBody] ProductDto ProductDto)
+        public object AddProduct(ProductDto ProductDto)
         {
             try
             {
                 var Product = _mapper.Map<Product>(ProductDto);
                 _dbcontext.Products.Add(Product);
                 _dbcontext.SaveChanges();
+
+                if (ProductDto != null)
+                {
+                    string filename = Product.ProductId + Path.GetExtension(ProductDto.Image.FileName);
+                    string filepath = @"wwwroot/ProductImages/" + filename;
+                    using (FileStream fileStream = new FileStream(filepath, FileMode.Create))
+                    {
+                        ProductDto.Image.CopyTo(fileStream);
+                    }
+
+                    var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
+                    Product.ImageLocalPath = filepath;
+                    Product.ImageUrl = baseUrl + @"/ProductImages/" + filename;
+                }
+                else
+                {
+                    Product.ImageUrl = "https://placehold.co/600x400";
+                }
+
+                _dbcontext.Products.Update(Product);
+                _dbcontext.SaveChanges();
+
                 _responseDto.Result = _mapper.Map<ProductDto>(Product);
                 _responseDto.StatusCode = Ok().StatusCode;
                 return _responseDto;
@@ -122,16 +144,42 @@ namespace Zomato.Services.ProductAPI.Controllers
         [HttpPut]
         [Route("UpdateProduct")]
         [Authorize(Roles = SD.RoleAdmin)]
-        public object UpdateProduct([FromBody] ProductDto ProductDto)
+        public object UpdateProduct(ProductDto ProductDto)
         {
             try
             {
                 var Product = _mapper.Map<Product>(ProductDto);
                 if (Product != null)
                 {
+                    if (ProductDto.Image != null)
+                    {
+                        //delete old image file
+                        if (!string.IsNullOrEmpty(Product.ImageLocalPath))
+                        {
+                            var oldFilePathDirectory = Path.Combine(Directory.GetCurrentDirectory(),Product.ImageLocalPath);
+                            FileInfo oldFile = new FileInfo(oldFilePathDirectory);
+                            if (oldFile.Exists)
+                            {
+                                oldFile.Delete();
+                            }
+                        }
+
+                        //update new image
+                        string filename = Product.ProductId + Path.GetExtension(ProductDto.Image.FileName);
+                        string filepath = @"wwwroot/ProductImages/" + filename;
+                        using (FileStream fileStream = new FileStream(filepath, FileMode.Create))
+                        {
+                            ProductDto.Image.CopyTo(fileStream);
+                        }
+
+                        var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
+                        Product.ImageLocalPath = filepath;
+                        Product.ImageUrl = baseUrl + @"/ProductImages/" + filename;
+                    }
+
                     _dbcontext.Products.Update(Product);
                     _dbcontext.SaveChanges();
-                    _responseDto.Result = Ok();
+                    _responseDto.Result = Product;
                     _responseDto.StatusCode = Ok().StatusCode;
                 }
 

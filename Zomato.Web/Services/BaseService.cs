@@ -41,6 +41,8 @@ namespace Zomato.Web.Services
 
                 message.RequestUri = new Uri(requestDto.Url);
                 message.Method = new HttpMethod(requestDto.Apitype.ToString());
+
+                //Checming contenttype for Product Image
                 if (requestDto.ContentType == SD.ContentType.MultipartFormData)
                 {
                     var content = new MultipartFormDataContent();
@@ -55,7 +57,14 @@ namespace Zomato.Web.Services
                                 content.Add(new StreamContent(file.OpenReadStream()), prop.Name, file.FileName);
                             }
                         }
+
+                        else
+                        {
+                            content.Add(new StringContent(value == null ? "" : value.ToString()), prop.Name);
+                        }
                     }
+
+                    message.Content = content;
                 }
                 else
                 {

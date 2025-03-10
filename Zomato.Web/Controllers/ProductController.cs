@@ -102,7 +102,8 @@ namespace Zomato.Web.Controllers
                     return View(nameof(Update),ProductDto);
                 }
                 TempData["success"] = "Product Updated Succesfully";
-                return RedirectToAction(nameof(Index));
+                ProductDto newProdDto = JsonConvert.DeserializeObject<ProductDto>(responseDto.Result.ToString());
+                return View(nameof(Update), newProdDto);
             }
 
             catch(Exception ex)
