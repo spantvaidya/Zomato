@@ -15,14 +15,20 @@ namespace Zomato.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var response = await _productService.GetAllProductsAsync();
-            var products = JsonConvert.DeserializeObject<List<ProductDto>>(response.Result.ToString());
-            return View(products);
+            if (response != null && response.Result != null)
+            {
+                var products = JsonConvert.DeserializeObject<List<ProductDto>>(response.Result.ToString());
+                return View(products);
+            }
+            else
+                TempData["error"] = response.Message;
+            return NotFound();
         }
         [HttpGet("ProductDetails")]
         public async Task<IActionResult> ProductDetails(int productId)
         {
             var response = await _productService.GetProductByIdAsync(productId);
-            if(response.IsSuccess)
+            if (response.IsSuccess)
             {
                 var product = JsonConvert.DeserializeObject<ProductDto>(response.Result.ToString());
                 return View(product);
@@ -31,7 +37,7 @@ namespace Zomato.Web.Controllers
             {
                 TempData["error"] = response.Message;
                 return RedirectToAction("Index");
-            }           
+            }
         }
 
         [HttpPost("ProductDetails")]
@@ -57,10 +63,10 @@ namespace Zomato.Web.Controllers
             cartDto.Cartdetails = cartDetailsDtos;
 
             ResponseDto? responseDto = await _cartService.UpsertCartAsync(cartDto);
-            if (responseDto != null && responseDto.IsSuccess) 
+            if (responseDto != null && responseDto.IsSuccess)
             {
                 TempData["success"] = "Item added to cart successfully";
-                return RedirectToAction(nameof(ProductDetails),productDto);
+                return RedirectToAction(nameof(ProductDetails), productDto);
             }
             else
             {

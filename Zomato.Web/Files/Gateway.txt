@@ -1,0 +1,4 @@
+﻿
+  //"CouponAPI": "https://localhost:7001",
+  //"ProductAPI": "https://localhost:7000",
+  //"CartAPI": "https://localhost:7003",

@@ -1,0 +1,71 @@
+{
+
+  "Routes": [
+
+    //"ProductAPI": "https://zomatoservicesproductapi.azurewebsites.net"
+    {
+      "DownstreamPathTemplate": "/api/Product/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "zomatoservicesproductapi.azurewebsites.net"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/Product/{everything}",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/Product/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "zomatoservicesproductapi.azurewebsites.net"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/Product/{everything}",
+      "UpstreamHttpMethod": [ "Post", "Put", "Delete" ],
+      "AuthenticationOptions": { "AuthenticationProviderKey": "Bearer" }
+    },
+
+    //  "CouponAPI": "https://zomatoservicescoupenapi.azurewebsites.net"
+    {
+      "DownstreamPathTemplate": "/api/coupon/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "zomatoservicescoupenapi.azurewebsites.net"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/coupon/{everything}",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/coupon/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "zomatoservicescoupenapi.azurewebsites.net"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/coupon/{everything}",
+      "UpstreamHttpMethod": [ "Post", "Put", "Delete" ],
+      "AuthenticationOptions": { "AuthenticationProviderKey": "Bearer" }
+    },
+
+    //"CartAPI": "https://zomatoservicescartapi.azurewebsites.net"
+    {
+      "DownstreamPathTemplate": "/api/cart/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "zomatoservicescartapi.azurewebsites.net"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/cart/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ]
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "https://zomatogatewayweb.azurewebsites.net"
+  }
+}

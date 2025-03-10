@@ -1,40 +1,20 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
-using System.Text;
+using Zomato.GatewaySolution.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddOcelot();
-
-//Add Authentication
-var secret = builder.Configuration.GetSection("ApiSettings:Secret").Value;
-var key = Encoding.ASCII.GetBytes(secret);
-var audience = builder.Configuration.GetSection("ApiSettings:Audience").Value;
-var issuer = builder.Configuration.GetSection("ApiSettings:Issuer").Value;
-
-builder.Services.AddAuthentication(option =>
+builder.AddAppAuthentication();
+if(builder.Environment.IsProduction())
 {
-    option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(option =>
-{
-    option.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(key),
-        ValidateIssuer = true,
-        ValidIssuer = issuer,
-        ValidateAudience = true,
-        ValidAudience = audience
-    };
-});
+    builder.Configuration.AddJsonFile("ocelot.production.json", optional: false, reloadOnChange: true);
+}
+else
+    builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
+builder.Services.AddOcelot(builder.Configuration);
 
 var app = builder.Build();
-app.UseOcelot().Wait();
 
 app.MapGet("/", () => "Hello World!");
-
+app.UseOcelot().Wait();
 app.Run();
