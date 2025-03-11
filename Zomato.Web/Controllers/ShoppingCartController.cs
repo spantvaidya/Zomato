@@ -18,6 +18,12 @@ namespace Zomato.Web.Controllers
             return View(await LoadCartDtoByLoggedInUserAsync());
         }
 
+        [Authorize]
+        public async Task<IActionResult> CheckOut()
+        {
+            return View(await LoadCartDtoByLoggedInUserAsync());
+        }
+
         private async Task<CartDto> LoadCartDtoByLoggedInUserAsync()
         {
             var userId = User.Claims.Where(c => c.Type == JwtRegisteredClaimNames.Sub)?.FirstOrDefault()?.Value;

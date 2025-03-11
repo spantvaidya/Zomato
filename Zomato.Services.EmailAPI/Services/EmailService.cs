@@ -24,7 +24,7 @@ namespace Zomato.Services.EmailAPI.Services
             StringBuilder stringBuilder = new StringBuilder();
 
             stringBuilder.AppendLine("<h1>Cart Received</h1>");
-            stringBuilder.AppendLine($"<p>Dear {cartDto.CartHeader.FirstName ?? "Guest"} {cartDto.CartHeader.LastName},</p>");
+            stringBuilder.AppendLine($"<p>Dear {cartDto.CartHeader.Name ?? "Guest"},</p>");
             stringBuilder.AppendLine("<p>Thank you for Cart request. Here are the Cart details:</p>");
             stringBuilder.AppendLine("<ul>");
 

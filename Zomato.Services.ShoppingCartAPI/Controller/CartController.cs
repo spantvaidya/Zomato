@@ -51,21 +51,24 @@ namespace Zomato.Services.CartAPI.Controller
                 //Get Products associated with the Cart
                 IEnumerable<ProductDto> products = await _productService.GetAllProducts();
 
-                //Get Coupons associated with the Cart
-                CouponDto coupon = await _couponService.GetCouponByCode(cartHeader.CouponCode ?? "");
-
                 foreach (var item in cartDetails)
                 {
                     item.ProductDto = products.FirstOrDefault(x => x.ProductId == item.ProductId);
-                    var itemTotal = item.ProductDto.Price * item.Count;            
-                       
+                    var itemTotal = item.ProductDto.Price * item.Count;
+
                     cartHeader.CartTotal += itemTotal;
                 }
-                if (coupon != null && !String.IsNullOrEmpty(coupon.CouponCode))
+
+                //Get Coupons associated with the Cart
+                if (cartHeader.CouponCode != null)
                 {
-                    cartHeader.CouponCode = coupon.CouponCode;
-                    cartHeader.Discount = (double)coupon.DiscountAmount;
-                    cartHeader.CartTotal = cartHeader.CartTotal - (double)coupon.DiscountAmount;
+                    CouponDto coupon = await _couponService.GetCouponByCode(cartHeader.CouponCode);
+                    if (coupon != null && !String.IsNullOrEmpty(coupon.CouponCode) && cartHeader.CartTotal > (double)coupon.MinAmount)
+                    {
+                        cartHeader.CouponCode = coupon.CouponCode;
+                        cartHeader.Discount = (double)coupon.DiscountAmount;
+                        cartHeader.CartTotal = cartHeader.CartTotal - (double)coupon.DiscountAmount;
+                    }
                 }
 
                 CartDto cartDto = new CartDto
@@ -190,9 +193,9 @@ namespace Zomato.Services.CartAPI.Controller
         {
             try
             {
-                var cartFromDb = await _dbContext.CartHeaders.
-                    FirstOrDefaultAsync(x => x.UserId == cartDto.CartHeader.UserId);
+                var cartFromDb = await _dbContext.CartHeaders.FirstAsync(x => x.UserId == cartDto.CartHeader.UserId);
                 cartFromDb.CouponCode = cartDto.CartHeader.CouponCode;
+                _dbContext.Update(cartFromDb);
                 await _dbContext.SaveChangesAsync();
                 _responseDto.Result = true;
             }
