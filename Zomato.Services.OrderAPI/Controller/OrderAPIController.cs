@@ -27,7 +27,7 @@ namespace Zomato.Services.OrderAPI.Controller
             _responseDto = new ResponseDto();
         }
 
-        [HttpGet]
+        [HttpPost("CreateOrder")]
         [Authorize]
         public async Task<ResponseDto> CreateOrder([FromBody] CartDto cartDto) 
         {

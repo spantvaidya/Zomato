@@ -8,9 +8,10 @@ using Zomato.Web.Services.IService;
 
 namespace Zomato.Web.Controllers
 {
-    public class ShoppingCartController(IShoppingCartService cartService) : Controller
+    public class ShoppingCartController(IShoppingCartService cartService, IOrderService orderService) : Controller
     {
         private readonly IShoppingCartService _cartService = cartService;
+        private readonly IOrderService _orderService = orderService;
 
         [Authorize]
         public async Task<IActionResult> CartIndex()
@@ -22,6 +23,25 @@ namespace Zomato.Web.Controllers
         public async Task<IActionResult> CheckOut()
         {
             return View(await LoadCartDtoByLoggedInUserAsync());
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> CheckOut(CartDto cartDto)
+        {
+            CartDto cart = await LoadCartDtoByLoggedInUserAsync();
+            cart.CartHeader.Name = cartDto.CartHeader.Name;
+            cart.CartHeader.Phone = cartDto.CartHeader.Phone;
+            cart.CartHeader.Email = cartDto.CartHeader.Email;
+
+            var response = await _orderService.CreateOrder(cart);
+            if (response != null && response.IsSuccess)
+            {
+                OrderHeaderDto orderHeaderDto = JsonConvert.DeserializeObject<OrderHeaderDto>(response.Result.ToString());
+                //get stripe payment details
+
+            }
+            return View();
         }
 
         private async Task<CartDto> LoadCartDtoByLoggedInUserAsync()

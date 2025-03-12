@@ -1,0 +1,3 @@
+﻿Pending Items
+1. Custom Image validation classes
+2. 
