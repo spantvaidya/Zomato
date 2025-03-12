@@ -2,21 +2,17 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Zomato.MessageBus;
-using Zomato.Services.CartAPI;
-using Zomato.Services.CartAPI.Data;
-using Zomato.Services.CartAPI.Extensions;
-using Zomato.Services.CartAPI.Service;
-using Zomato.Services.CartAPI.Service.Interface;
-using Zomato.Services.CartAPI.Utility;
+using Zomato.Services.OrderAPI;
+using Zomato.Services.OrderAPI.Data;
+using Zomato.Services.OrderAPI.Extensions;
+using Zomato.Services.OrderAPI.Utility;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-
 
 builder.Services.AddControllers();
-
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(option =>
@@ -45,7 +41,6 @@ builder.Services.AddSwaggerGen(option =>
     });
 });
 
-
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<BackendAPIAuthenticationHttpClientHandler>();
 
@@ -54,21 +49,15 @@ builder.Services.AddHttpClient("Product", x => x.BaseAddress =
 new Uri(builder.Configuration.GetSection("ServiceUrls:ProductAPI").Value))
     .AddHttpMessageHandler<BackendAPIAuthenticationHttpClientHandler>();
 
-builder.Services.AddHttpClient("Coupon", x => x.BaseAddress =
-new Uri(builder.Configuration.GetSection("ServiceUrls:CouponAPI").Value))
-    .AddHttpMessageHandler<BackendAPIAuthenticationHttpClientHandler>();
-
-builder.Services.AddScoped<IProductService,ProductService>();
-builder.Services.AddScoped<ICouponService, CouponService>();
-builder.Services.AddScoped<IMessageBus, MessageBus>();
-builder.Services.AddAutoMapper(typeof(MappingConfig));
-
-builder.Services.AddDbContext<AppDbContext>(option =>
-option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 builder.AddAppAuthentication();
 builder.Services.AddAuthorization();
+builder.Services.AddScoped<IProductService, ProductService>();
 
+builder.Services.AddScoped<IMessageBus, MessageBus>();
+
+builder.Services.AddAutoMapper(typeof(MappingConfig));
+builder.Services.AddDbContext<AppDbContext>(option =>
+option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -89,6 +78,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
 //Add SeedData and Pending Migration at the start of the App
 ApplyMigration();
 
@@ -103,6 +93,5 @@ void ApplyMigration()
         };
     }
 }
-
 
 app.Run();

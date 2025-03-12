@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zomato.GatewaySolution", "Z
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zomato.Services.EmailAPI", "Zomato.Services.EmailAPI\Zomato.Services.EmailAPI.csproj", "{A112B8AA-B5CD-4C7D-BA2E-DB782636393E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zomato.Services.OrderAPI", "Zomato.Services.OrderAPI\Zomato.Services.OrderAPI.csproj", "{25972010-872C-4EE9-A38F-AC9475CC8517}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,6 +67,10 @@ Global
 		{A112B8AA-B5CD-4C7D-BA2E-DB782636393E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A112B8AA-B5CD-4C7D-BA2E-DB782636393E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A112B8AA-B5CD-4C7D-BA2E-DB782636393E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25972010-872C-4EE9-A38F-AC9475CC8517}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25972010-872C-4EE9-A38F-AC9475CC8517}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25972010-872C-4EE9-A38F-AC9475CC8517}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25972010-872C-4EE9-A38F-AC9475CC8517}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -78,5 +84,6 @@ Global
 		{08BE5AA4-BF55-424C-8E3F-BC4D0A9FBCAE} = {C6E3D3AF-AD4B-41A0-BA73-27F9CA9BE17B}
 		{6BF9B210-4D35-4CF0-A565-C60950AA87B4} = {21BD3C0A-395E-4EDB-BD5E-2325B6400A74}
 		{A112B8AA-B5CD-4C7D-BA2E-DB782636393E} = {DA18366E-99B4-4810-9D93-1319C618A202}
+		{25972010-872C-4EE9-A38F-AC9475CC8517} = {DA18366E-99B4-4810-9D93-1319C618A202}
 	EndGlobalSection
 EndGlobal

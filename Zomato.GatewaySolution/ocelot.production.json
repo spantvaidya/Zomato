@@ -63,6 +63,19 @@
       ],
       "UpstreamPathTemplate": "/api/cart/{everything}",
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ]
+    },
+
+    //"OrderAPI": "https://zomatoservicesorderapi.azurewebsites.net"
+    {
+      "DownstreamPathTemplate": "/api/order/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "zomatoservicesorderapi.azurewebsites.net"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/order/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ]
     }
   ],
   "GlobalConfiguration": {
