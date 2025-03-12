@@ -38,10 +38,26 @@ namespace Zomato.Web.Controllers
             if (response != null && response.IsSuccess)
             {
                 OrderHeaderDto orderHeaderDto = JsonConvert.DeserializeObject<OrderHeaderDto>(response.Result.ToString());
-                //get stripe payment details
+                
+                var domain = Request.Scheme + "://" + Request.Host.Value;
+                StripeRequestDto stripeRequestDto = new StripeRequestDto
+                {
+                    ApprovedUrl = domain + "/order/Confirmation?orderId=" + orderHeaderDto.OrderHeaderId,
+                    CancelUrl = domain + "/shoppingcart/CheckOut",
+                    OrderHeader = orderHeaderDto
+                };
 
+                var responseStripe = await _orderService.CreateStripeSession(stripeRequestDto);
+                if (responseStripe != null && responseStripe.IsSuccess)
+                {
+                    var stripeSession = JsonConvert.DeserializeObject<StripeRequestDto>(responseStripe.Result.ToString());
+                    return Redirect(stripeSession.StripeSessionUrl);
+                }
+
+
+                //return RedirectToAction("Confirmation", nameof(OrderController), new { orderId = orderHeaderDto.OrderHeaderId});
             }
-            return View();
+            return View(cart);
         }
 
         private async Task<CartDto> LoadCartDtoByLoggedInUserAsync()

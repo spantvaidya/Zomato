@@ -4,9 +4,9 @@ namespace Zomato.Web.Controllers
 {
     public class OrderController : Controller
     {
-        public IActionResult Index()
+        public async Task<IActionResult> Confirmation(int orderId)
         {
-            return View();
+            return View(orderId);
         }
     }
 }

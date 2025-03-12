@@ -14,7 +14,7 @@ namespace Zomato.Services.OrderAPI.Models
         public string? Email { get; set; }
         public DateTime OrderCreated { get; set; }
         public string? OrderStatus { get; set; }
-        public IEnumerable<OrderDetailsDto>? OrderDetailsDto { get; set; }
+        public IEnumerable<OrderDetailsDto> OrderDetailsDto { get; set; }
         public string? StripeSessionId { get; set; }
         public string? PaymentIntentId { get; set; }
     }

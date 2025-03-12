@@ -22,5 +22,15 @@ namespace Zomato.Web.Services
                 Data = cartDto
             }, true);
         }
+
+        public async Task<ResponseDto?> CreateStripeSession(StripeRequestDto stripeRequestDto)
+        {
+            return await _baseService.SendAsync(new RequestDto
+            {
+                Apitype = SD.ApiType.POST,
+                Url = SD.OrderAPIBase + "/api/order/CreateStripeSession",
+                Data = stripeRequestDto
+            }, true);
+        }
     }
 }

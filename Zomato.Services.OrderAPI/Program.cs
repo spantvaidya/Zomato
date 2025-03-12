@@ -75,6 +75,8 @@ else
     });
 }
 
+Stripe.StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Value;
+
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

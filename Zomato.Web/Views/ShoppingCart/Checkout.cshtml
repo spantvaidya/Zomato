@@ -1,6 +1,11 @@
 ﻿@model CartDto
 
 <form method="post">
+    <input type="hidden" asp-for="@Model.CartHeader.UserId" />
+    <input type="hidden" asp-for="@Model.CartHeader.CartHeaderId" />
+    <input type="hidden" asp-for="@Model.CartHeader.CouponCode" />
+    <input type="hidden" asp-for="@Model.CartHeader.CartTotal" />
+    <input type="hidden" asp-for="@Model.CartHeader.Discount" />    
     <div class="border mt-2 p-4 rounded">
         <div class="container row">
             <div class="col-md-7 col-12">

@@ -8,12 +8,15 @@ namespace Zomato.Services.OrderAPI
     {
         public MappingConfig()
         {
+            CreateMap<ProductDto, OrderDetailsDto>()
+                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Price));
+
             CreateMap<OrderHeaderDto, CartHeaderDto>()
                 .ForMember(dest => dest.CartTotal, opt => opt.MapFrom(src => src.OrderTotal)).ReverseMap();
 
             CreateMap<CartDetailsDto, OrderDetailsDto>()
-                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.ProductDto.Name));
-            CreateMap<CartDetailsDto, OrderDetailsDto>()
+                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.ProductDto.Name))
                .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.ProductDto.Price));
 
             CreateMap<OrderDetailsDto, CartDetailsDto>().ReverseMap();
