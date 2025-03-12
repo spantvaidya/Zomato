@@ -5,6 +5,8 @@ using Zomato.MessageBus;
 using Zomato.Services.OrderAPI;
 using Zomato.Services.OrderAPI.Data;
 using Zomato.Services.OrderAPI.Extensions;
+using Zomato.Services.OrderAPI.Service;
+using Zomato.Services.OrderAPI.Service.Interface;
 using Zomato.Services.OrderAPI.Utility;
 
 var builder = WebApplication.CreateBuilder(args);
