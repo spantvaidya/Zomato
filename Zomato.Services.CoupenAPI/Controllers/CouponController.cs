@@ -81,6 +81,20 @@ namespace Zomato.Services.CoupenAPI.Controllers
                 var coupen = _mapper.Map<Coupon>(coupenDto);
                 _dbcontext.Coupons.Add(coupen);
                 _dbcontext.SaveChanges();
+
+                //Cretae Coupon on Stripe
+                var options = new Stripe.CouponCreateOptions
+                {
+                    AmountOff = (long)(coupen.DiscountAmount * 100),
+                    Duration = "once",
+                    Id = coupen.CouponCode,
+                    Currency = "usd",
+                    MaxRedemptions = 1,
+                };
+
+                var service = new Stripe.CouponService();
+                var response = service.Create(options);
+
                 _responseDto.Result = _mapper.Map<CouponDto>(coupen);
                 _responseDto.StatusCode = Ok().StatusCode;
                 return _responseDto;
@@ -136,11 +150,15 @@ namespace Zomato.Services.CoupenAPI.Controllers
         {
             try
             {
-                var coupen = _dbcontext.Coupons.FirstOrDefault(x => x.CouponId == Id);
-                if (coupen != null)
+                var coupon = _dbcontext.Coupons.FirstOrDefault(x => x.CouponId == Id);
+                if (coupon != null)
                 {
-                    _dbcontext.Coupons.Remove(coupen);
+                    _dbcontext.Coupons.Remove(coupon);
                     _dbcontext.SaveChanges();
+
+                    var service = new Stripe.CouponService();
+                    var response = service.Delete(coupon.CouponCode);
+
                     _responseDto.Result = Ok();
                     _responseDto.StatusCode = Ok().StatusCode;
                 }
@@ -154,9 +172,8 @@ namespace Zomato.Services.CoupenAPI.Controllers
             }
             catch (Exception ex)
             {
-                _responseDto.Message = ex.InnerException.Message;
+                _responseDto.Message = ex.Message;
                 _responseDto.IsSuccess = false;
-                _responseDto.Message = "failure";
             }
 
             return _responseDto;

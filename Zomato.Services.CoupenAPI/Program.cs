@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Text;
+using Stripe;
 using Zomato.Services.CoupenAPI;
 using Zomato.Services.CoupenAPI.Data;
 using Zomato.Services.CoupenAPI.Extensions;
@@ -48,6 +47,8 @@ builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddDbContext<AppDbContext>(option =>
 option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 var app = builder.Build();
+
+StripeConfiguration.ApiKey = app.Configuration["StripeSettings:SecretKey"];
 
 // Configure the HTTP request pipeline.
 app.UseSwagger();

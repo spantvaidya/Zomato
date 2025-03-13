@@ -124,6 +124,11 @@ namespace Zomato.Web.Controllers
                 }
 
                 responseDto = await _couponService.DeleteCouponAsync(Id);
+                if (responseDto.Result == null)
+                {
+                    TempData["error"] = responseDto.Message;
+                    return RedirectToAction(nameof(Index));
+                }
 
                 return RedirectToAction(nameof(Index));
             }
