@@ -139,8 +139,7 @@ namespace Zomato.Services.OrderAPI.Controller
             return _responseDto;
         }
 
-        [HttpPost("ValidateStripeSession")]
-        [Authorize]
+        [HttpPost("ValidateStripeSession")]        
         public async Task<ResponseDto> ValidateStripeSession([FromBody] int orderHeaderId)
         {
             try
