@@ -89,8 +89,8 @@ namespace Zomato.Services.OrderAPI.Controller
                 {
                     new SessionDiscountOptions
                     {
-                        Coupon = stripeRequestDto.OrderHeader.CouponCode                        
-                    } 
+                        Coupon = stripeRequestDto.OrderHeader.CouponCode
+                    }
                 };
 
                 foreach (var item in stripeRequestDto.OrderHeader.OrderDetailsDto)
@@ -128,6 +128,40 @@ namespace Zomato.Services.OrderAPI.Controller
 
 
                 _responseDto.Result = stripeRequestDto;
+                return _responseDto;
+            }
+            catch (Exception ex)
+            {
+                _responseDto.Message = ex.Message;
+                _responseDto.IsSuccess = false;
+                _responseDto.StatusCode = StatusCodes.Status500InternalServerError;
+            }
+            return _responseDto;
+        }
+
+        [HttpPost("ValidateStripeSession")]
+        [Authorize]
+        public async Task<ResponseDto> ValidateStripeSession([FromBody] int orderHeaderId)
+        {
+            try
+            {
+                //Save PaymentIntentId
+                OrderHeader orderHeader = _dbContext.OrderHeaders.First(u => u.OrderHeaderId == orderHeaderId);
+
+                var service = new SessionService();
+                Session session = service.Get(orderHeader.StripeSessionId);
+
+                var paymentIntentService = new PaymentIntentService();
+                PaymentIntent paymentIntent = paymentIntentService.Get(session.PaymentIntentId);
+
+                if (paymentIntent.Status == "succeeded")
+                {
+                    orderHeader.PaymentIntentId = paymentIntent.Id;
+                    orderHeader.OrderStatus = SD.Status_Approved;
+                    _dbContext.SaveChanges();
+                }
+
+                _responseDto.Result = _mapper.Map<OrderHeaderDto>(orderHeader);
                 return _responseDto;
             }
             catch (Exception ex)

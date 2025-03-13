@@ -88,8 +88,7 @@ namespace Zomato.Services.CoupenAPI.Controllers
                     AmountOff = (long)(coupen.DiscountAmount * 100),
                     Duration = "once",
                     Id = coupen.CouponCode,
-                    Currency = "usd",
-                    MaxRedemptions = 1,
+                    Currency = "usd"
                 };
 
                 var service = new Stripe.CouponService();
@@ -101,8 +100,7 @@ namespace Zomato.Services.CoupenAPI.Controllers
             }
             catch (Exception ex)
             {
-                _responseDto.Message = ex.InnerException.Message;
-                _responseDto.Message = "failure";
+                _responseDto.Message = ex.Message;
                 _responseDto.IsSuccess = false;
             }
 

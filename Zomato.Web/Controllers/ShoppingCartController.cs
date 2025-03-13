@@ -42,7 +42,7 @@ namespace Zomato.Web.Controllers
                 var domain = Request.Scheme + "://" + Request.Host.Value;
                 StripeRequestDto stripeRequestDto = new StripeRequestDto
                 {
-                    ApprovedUrl = domain + "/order/Confirmation?orderId=" + orderHeaderDto.OrderHeaderId,
+                    ApprovedUrl = domain + "/shoppingcart/Confirmation?orderId=" + orderHeaderDto.OrderHeaderId,
                     CancelUrl = domain + "/shoppingcart/CheckOut",
                     OrderHeader = orderHeaderDto
                 };
@@ -51,13 +51,30 @@ namespace Zomato.Web.Controllers
                 if (responseStripe != null && responseStripe.IsSuccess)
                 {
                     var stripeSession = JsonConvert.DeserializeObject<StripeRequestDto>(responseStripe.Result.ToString());
-                    return Redirect(stripeSession.StripeSessionUrl);
+                    Response.Headers.Add("Location",stripeSession.StripeSessionUrl);
+                    return new StatusCodeResult(303);
+                    //return Redirect(stripeSession.StripeSessionUrl);
                 }
-
+                else 
+                {
+                    TempData["Error"] = responseStripe?.Message;
+                }
 
                 //return RedirectToAction("Confirmation", nameof(OrderController), new { orderId = orderHeaderDto.OrderHeaderId});
             }
             return View(cart);
+        }
+
+        public async Task<IActionResult> Confirmation(int orderId)
+        {
+            //Response.redirectToRoute("OrderConfirmation", new { orderId = orderId });
+            ResponseDto? response = await _orderService.ValidateStripeSession(orderId);
+            if (response != null && response.IsSuccess)
+            {
+                OrderHeaderDto order = JsonConvert.DeserializeObject<OrderHeaderDto>(Convert.ToString(response.Result));
+                return View(orderId);
+            }
+            return BadRequest();
         }
 
         private async Task<CartDto> LoadCartDtoByLoggedInUserAsync()

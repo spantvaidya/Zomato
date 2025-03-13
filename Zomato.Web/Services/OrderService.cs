@@ -32,5 +32,15 @@ namespace Zomato.Web.Services
                 Data = stripeRequestDto
             }, true);
         }
+
+        public async Task<ResponseDto?> ValidateStripeSession(int orderHeaderId)
+        {
+            return await _baseService.SendAsync(new RequestDto
+            {
+                Apitype = SD.ApiType.POST,
+                Url = SD.OrderAPIBase + "/api/order/ValidateStripeSession",
+                Data = orderHeaderId
+            }, true);
+        }
     }
 }
