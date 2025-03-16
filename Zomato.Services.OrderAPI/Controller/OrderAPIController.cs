@@ -1,16 +1,14 @@
 ﻿using AutoMapper;
-using Azure;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Stripe.Checkout;
 using Stripe;
+using Stripe.Checkout;
+using Zomato.MessageBus;
 using Zomato.Services.OrderAPI.Data;
 using Zomato.Services.OrderAPI.Models;
 using Zomato.Services.OrderAPI.Models.Dto;
 using Zomato.Services.OrderAPI.Service.Interface;
 using Zomato.Services.OrderAPI.Utility;
-using System.Collections;
 
 namespace Zomato.Services.OrderAPI.Controller
 {
@@ -22,12 +20,17 @@ namespace Zomato.Services.OrderAPI.Controller
         private IMapper _mapper;
         private readonly AppDbContext _dbContext;
         private IProductService _productService;
+        private IConfiguration _configuration;
+        private IMessageBus _messageBus;
 
-        public OrderAPIController(IMapper mapper, AppDbContext dbContext, IProductService productService)
+        public OrderAPIController(IMapper mapper, AppDbContext dbContext, IProductService productService,
+            IConfiguration configuration, IMessageBus messageBus)
         {
             _mapper = mapper;
             _dbContext = dbContext;
             _productService = productService;
+            _configuration = configuration;
+            _messageBus = messageBus;
             _responseDto = new ResponseDto();
         }
 
@@ -139,7 +142,7 @@ namespace Zomato.Services.OrderAPI.Controller
             return _responseDto;
         }
 
-        [HttpPost("ValidateStripeSession")]        
+        [HttpPost("ValidateStripeSession")]
         public async Task<ResponseDto> ValidateStripeSession([FromBody] int orderHeaderId)
         {
             try
@@ -158,6 +161,17 @@ namespace Zomato.Services.OrderAPI.Controller
                     orderHeader.PaymentIntentId = paymentIntent.Id;
                     orderHeader.OrderStatus = SD.Status_Approved;
                     _dbContext.SaveChanges();
+
+                    //Publish Rewards points message to serviceBus
+                    RewardsDto rewardsDto = new RewardsDto
+                    {
+                        UserId = orderHeader.UserId,
+                        Points = Convert.ToInt32(orderHeader.OrderTotal / 2),
+                        OrderId = orderHeader.OrderHeaderId,
+                        Email = orderHeader.Email
+                    };
+                    string rewardsTopic = _configuration.GetValue<string>("TopicAndQueueNames:OrderCreatedTopic");
+                    await _messageBus.PublishMessage(rewardsDto, rewardsTopic);
                 }
 
                 _responseDto.Result = _mapper.Map<OrderHeaderDto>(orderHeader);

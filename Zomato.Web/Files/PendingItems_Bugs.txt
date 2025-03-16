@@ -3,3 +3,4 @@
 2. Bug - CartDetailsDto to OrderDetailsDto mapping now working for ProductName and Price fields. 
 		 As of now manually updating or setrting those fields.
 3. Token null after redirecting from Stripe payment back to Order Confirmation and validatingSessionPayment 
+4. Delete Cart Error

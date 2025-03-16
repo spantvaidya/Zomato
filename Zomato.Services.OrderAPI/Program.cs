@@ -85,7 +85,6 @@ app.MapControllers();
 
 //Add SeedData and Pending Migration at the start of the App
 ApplyMigration();
-
 void ApplyMigration()
 {
     using (var scope = app.Services.CreateScope())

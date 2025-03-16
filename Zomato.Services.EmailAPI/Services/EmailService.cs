@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Text;
 using Zomato.Services.EmailAPI.Data;
+using Zomato.Services.EmailAPI.Message;
 using Zomato.Services.EmailAPI.Models;
 using Zomato.Services.EmailAPI.Models.Dto;
 using Zomato.Services.EmailAPI.Utility;
@@ -58,6 +59,19 @@ namespace Zomato.Services.EmailAPI.Services
             //log email
             await SendEmail(email, emailBody, "Welcome To Zomato");
             await LogEmail(emailBody, email ?? "");
+        }       
+
+        public async Task SendAndLogOrderCreatedEmailAsync(EmailMessage emailMessage)
+        {
+            StringBuilder stringBuilder = new StringBuilder(); 
+
+            stringBuilder.Append("<h1>Order Received</h1>");
+            stringBuilder.Append("<p>Order Details :- </p>");
+            stringBuilder.Append("<br/> Order Id: " + emailMessage.OrderId);
+            var emailBody = stringBuilder.ToString();
+            //log email
+            await SendEmail(emailMessage.Email,emailBody, "Order Received");
+            await LogEmail(emailBody, emailMessage.Email ?? "");
         }
 
         private async Task<bool> SendEmail(string toEmail, string emailBody, string subject)
@@ -73,7 +87,7 @@ namespace Zomato.Services.EmailAPI.Services
                 {
                     var mailMessage = new MailMessage
                     {
-                        From = new MailAddress("sameer.pantvaidya@gmail.com"),
+                        From = new MailAddress(SD.EmailFrom),
                         Subject = subject,
                         Body = emailBody,
                         IsBodyHtml = true,
