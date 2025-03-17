@@ -1,4 +1,5 @@
-﻿using Zomato.Services.EmailAPI.Models.Dto;
+﻿using Zomato.Services.EmailAPI.Message;
+using Zomato.Services.EmailAPI.Models.Dto;
 
 namespace Zomato.Services.EmailAPI.Services
 {
@@ -6,5 +7,6 @@ namespace Zomato.Services.EmailAPI.Services
     {
         Task SendAndLogEmailCartAsync(CartDto cartDto);
         Task SendAndLogRegisterUserEmailAsync(string email);
+        Task SendAndLogOrderCreatedEmailAsync(EmailMessage emailMessage);
     }
 }

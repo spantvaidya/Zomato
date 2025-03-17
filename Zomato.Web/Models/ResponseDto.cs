@@ -7,6 +7,6 @@ namespace Zomato.Web.Models
         public object Result { get; set; }
         public string Message { get; set; } = "Success";
         public bool IsSuccess { get; set; } = true;
-        public int StatusCode { get; set; }
+        public int StatusCode { get; set; } = 200;
     }
 }

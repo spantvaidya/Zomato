@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Stripe;
 using Stripe.Checkout;
 using Zomato.MessageBus;
@@ -32,6 +33,57 @@ namespace Zomato.Services.OrderAPI.Controller
             _configuration = configuration;
             _messageBus = messageBus;
             _responseDto = new ResponseDto();
+        }
+
+        [HttpGet("GetOrders")]
+        [Authorize]
+        public ResponseDto? GetOrders(string? userId = "")
+        {
+            try
+            {
+                IEnumerable<OrderHeader> orderHeaders;
+                if (User.IsInRole(SD.RoleAdmin))
+                {
+                    orderHeaders = _dbContext.OrderHeaders.Include(u => u.OrderDetails).OrderByDescending(x => x.OrderHeaderId).ToList();
+                }
+                else
+                    orderHeaders = _dbContext.OrderHeaders.Include(u => u.OrderDetails).Where(u => u.UserId == userId).ToList();
+
+                IEnumerable<OrderHeaderDto> orderHeaderDtos = _mapper.Map<IEnumerable<OrderHeaderDto>>(orderHeaders);
+
+                foreach (var item in orderHeaderDtos)
+                {
+                    item.OrderDetailsDto = _mapper.Map<IEnumerable<OrderDetailsDto>>(_dbContext.OrderDetails.Where(u => u.OrderHeaderId == item.OrderHeaderId));
+                }
+                _responseDto.Result = orderHeaderDtos;
+                return _responseDto;
+            }
+            catch (Exception ex)
+            {
+                _responseDto.Message = ex.Message;
+                _responseDto.IsSuccess = false;
+                _responseDto.StatusCode = StatusCodes.Status500InternalServerError;
+            }
+            return _responseDto;
+        }
+
+        [HttpGet("GetOrder/{id:int}")]
+        [Authorize]
+        public ResponseDto? GetOrder(int id)
+        {
+            try
+            {
+                OrderHeader orderHeader = _dbContext.OrderHeaders.Include(u => u.OrderDetails).First(x => x.OrderHeaderId == id);
+                _responseDto.Result = _mapper.Map<OrderHeaderDto>(orderHeader);
+                return _responseDto;
+            }
+            catch (Exception ex)
+            {
+                _responseDto.Message = ex.Message;
+                _responseDto.IsSuccess = false;
+                _responseDto.StatusCode = StatusCodes.Status500InternalServerError;
+            }
+            return _responseDto;
         }
 
         [HttpPost("CreateOrder")]
@@ -176,6 +228,38 @@ namespace Zomato.Services.OrderAPI.Controller
 
                 _responseDto.Result = _mapper.Map<OrderHeaderDto>(orderHeader);
                 return _responseDto;
+            }
+            catch (Exception ex)
+            {
+                _responseDto.Message = ex.Message;
+                _responseDto.IsSuccess = false;
+                _responseDto.StatusCode = StatusCodes.Status500InternalServerError;
+            }
+            return _responseDto;
+        }
+
+        [Authorize]
+        [HttpPost("UpdateOrderStatus/{orderId:int}")]
+        public async Task<ResponseDto> UpdateOrderStatus(int orderId, [FromBody] string newStatus)
+        {
+            try
+            {
+                OrderHeader orderHeader = _dbContext.OrderHeaders.First(u => u.OrderHeaderId == orderId);
+
+                if (newStatus == SD.Status_Cancelled)
+                {
+                    //Refund the amount
+                    var service = new RefundService();
+                    var refundOptions = new RefundCreateOptions
+                    {
+                        Reason = RefundReasons.RequestedByCustomer,
+                        PaymentIntent = orderHeader.PaymentIntentId,
+                    };
+                    Refund refund = service.Create(refundOptions);
+                }
+
+                orderHeader.OrderStatus = newStatus;
+                _dbContext.SaveChanges();
             }
             catch (Exception ex)
             {
