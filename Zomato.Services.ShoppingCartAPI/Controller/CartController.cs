@@ -155,7 +155,7 @@ namespace Zomato.Services.CartAPI.Controller
             return _responseDto;
         }
 
-        [HttpPost("ClearCart")]
+        [HttpPost("ClearCart/{cartDetailsId:int}")]
         public async Task<ResponseDto> ClearCart(int cartDetailsId)
         {
             try

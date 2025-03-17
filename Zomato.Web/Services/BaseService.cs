@@ -82,6 +82,8 @@ namespace Zomato.Web.Services
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
+                    var apiContent = await response.Content.ReadAsStringAsync();
+                    var apiResponse = JsonConvert.DeserializeObject<ResponseDto>(apiContent);
                     return new ResponseDto { StatusCode = 404, Message = "Not Found", IsSuccess = false };
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)

@@ -9,10 +9,11 @@ $(function () {
 
 function loadDataTable(status) {
     dataTable = $('#tblData').DataTable({
+        "order":[[0,'desc']],
         "ajax": {
-            "url": "/order/GetAll"
+            "url": "/order/GetAll?status=" + status
         },
-        "columns": [    
+        "columns": [
             { "data": "orderHeaderId", "width": "10%" },
             { "data": "name", "width": "15%" },
             { "data": "email", "width": "20%" },
@@ -24,7 +25,7 @@ function loadDataTable(status) {
                 "render": function (data) {
                     return `
                         <div class="text-center">
-                            <a href="/Order/OrderDetails/${data}" class="border btn btn-success text-white" 
+                            <a href="/Order/OrderDetails?orderId=${data}" class="border btn btn-success text-white" 
                             style="cursor:pointer; width:90%;" title="Order Details">
                                 <i class="bi bi-pencil-square"></i>
                             </a>

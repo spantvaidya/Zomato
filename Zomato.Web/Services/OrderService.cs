@@ -27,8 +27,7 @@ namespace Zomato.Web.Services
             return await _baseService.SendAsync(new RequestDto
             {
                 Apitype = SD.ApiType.GET,
-                Url = SD.OrderAPIBase + "/api/order/GetOrders",
-                Data = userId
+                Url = SD.OrderAPIBase + "/api/order/GetOrders/"+ userId,
             }, true);
         }
 

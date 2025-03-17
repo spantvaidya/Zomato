@@ -86,7 +86,7 @@ namespace Zomato.Services.CoupenAPI.Controllers
                 var options = new Stripe.CouponCreateOptions
                 {
                     AmountOff = (long)(coupen.DiscountAmount * 100),
-                    Duration = "once",
+                    Duration = "forever",
                     Id = coupen.CouponCode,
                     Currency = "usd"
                 };

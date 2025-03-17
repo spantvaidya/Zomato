@@ -35,7 +35,7 @@ namespace Zomato.Services.OrderAPI.Controller
             _responseDto = new ResponseDto();
         }
 
-        [HttpGet("GetOrders")]
+        [HttpGet("GetOrders/{userId}")]
         [Authorize]
         public ResponseDto? GetOrders(string? userId = "")
         {
@@ -47,7 +47,7 @@ namespace Zomato.Services.OrderAPI.Controller
                     orderHeaders = _dbContext.OrderHeaders.Include(u => u.OrderDetails).OrderByDescending(x => x.OrderHeaderId).ToList();
                 }
                 else
-                    orderHeaders = _dbContext.OrderHeaders.Include(u => u.OrderDetails).Where(u => u.UserId == userId).ToList();
+                    orderHeaders = _dbContext.OrderHeaders.Include(u => u.OrderDetails).Where(u => u.UserId == userId).OrderByDescending(x => x.OrderHeaderId).ToList();
 
                 IEnumerable<OrderHeaderDto> orderHeaderDtos = _mapper.Map<IEnumerable<OrderHeaderDto>>(orderHeaders);
 
@@ -74,7 +74,10 @@ namespace Zomato.Services.OrderAPI.Controller
             try
             {
                 OrderHeader orderHeader = _dbContext.OrderHeaders.Include(u => u.OrderDetails).First(x => x.OrderHeaderId == id);
-                _responseDto.Result = _mapper.Map<OrderHeaderDto>(orderHeader);
+                OrderHeaderDto orderHeaderDto = _mapper.Map<OrderHeaderDto>(orderHeader);
+                orderHeaderDto.OrderDetailsDto = _mapper.Map<IEnumerable<OrderDetailsDto>>(_dbContext.OrderDetails.Where(u => u.OrderHeaderId == orderHeaderDto.OrderHeaderId));
+
+                _responseDto.Result = orderHeaderDto;
                 return _responseDto;
             }
             catch (Exception ex)
@@ -250,12 +253,15 @@ namespace Zomato.Services.OrderAPI.Controller
                 {
                     //Refund the amount
                     var service = new RefundService();
-                    var refundOptions = new RefundCreateOptions
+                    if (!string.IsNullOrEmpty(orderHeader.PaymentIntentId))
                     {
-                        Reason = RefundReasons.RequestedByCustomer,
-                        PaymentIntent = orderHeader.PaymentIntentId,
-                    };
-                    Refund refund = service.Create(refundOptions);
+                        var refundOptions = new RefundCreateOptions
+                        {
+                            Reason = RefundReasons.RequestedByCustomer,
+                            PaymentIntent = orderHeader.PaymentIntentId,
+                        };
+                        Refund refund = service.Create(refundOptions);
+                    }
                 }
 
                 orderHeader.OrderStatus = newStatus;

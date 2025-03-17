@@ -89,14 +89,14 @@ namespace Zomato.Web.Controllers
         }
 
         [HttpPost("ClearCart")]
-        public async Task<IActionResult> ClearCartAsync(int cartDetailsId)
+        public async Task<IActionResult> ClearCart(int cartDetailsId)
         {
             var userId = User.Claims.Where(c => c.Type == JwtRegisteredClaimNames.Sub)?.FirstOrDefault()?.Value;
             var response = await _cartService.ClearCartAsync(cartDetailsId);
             if (response != null && response.IsSuccess)
             {
-                var cartDto = JsonConvert.DeserializeObject<CartDto>(response.Result.ToString());
-                return View("CartIndex", cartDto);
+                //var cartDto = JsonConvert.DeserializeObject<CartDto>(response.Result.ToString());
+                return RedirectToAction(nameof(CartIndex));
             }
             return null;
         }

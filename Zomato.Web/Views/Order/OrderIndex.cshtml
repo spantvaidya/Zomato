@@ -4,25 +4,25 @@
     var pending = "";
     var approved = "";
     var completed = "";
-    var refunded = "";
+    var readyforpickup = "";
     var cancelled = "";
 
     switch (status)
     {
         case SD.Status_Pending:
-            pending = "active text-white bg-success";
+            pending = "active text-white bg-secondary";
             break;
         case SD.Status_Approved:
-            approved = "active text-white bg-success";
+            approved = "active text-white bg-secondary";
+            break;
+        case SD.Status_ReadyForPickup:
+            readyforpickup = "active text-white bg-secondary";
             break;
         case SD.Status_Completed:
-            completed = "active text-white bg-success";
+            completed = "active text-white bg-secondary";
             break;
         case SD.Status_Cancelled:
-            cancelled = "active text-white bg-success";
-            break;
-        case SD.Status_Refunded:
-            refunded = "active text-white bg-success";
+            cancelled = "active text-white bg-secondary";
             break;
         default:
             break;
@@ -31,53 +31,46 @@
 
 
 <div class="card shadow border-0 mt-4">
-    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3 d-flex justify-content-between">
         <div class="row">
             <h1 class="text-white">Order List</h1>
         </div>
+        <ul class="list-group list-group-horizontal-sm pt-2">
+            <a style="text-decoration:none;" asp-controller="Order" asp-action="OrderIndex" asp-route-status="@SD.Status_Pending">
+            <li class="list-group-item @pending">@SD.Status_Pending</li>
+            </a>
+            <a style="text-decoration:none;" asp-controller="Order" asp-action="OrderIndex" asp-route-status="@SD.Status_Approved">
+            <li class="list-group-item @approved">@SD.Status_Approved</li>
+            </a>
+            <a style="text-decoration:none;" asp-controller="Order" asp-action="OrderIndex" asp-route-status="@SD.Status_ReadyForPickup">
+            <li class="list-group-item @readyforpickup">@SD.Status_ReadyForPickup</li>
+            </a>
+            <a style="text-decoration:none;" asp-controller="Order" asp-action="OrderIndex" asp-route-status="@SD.Status_Completed">
+            <li class="list-group-item @completed">@SD.Status_Completed</li>
+            </a>
+            <a style="text-decoration:none;" asp-controller="Order" asp-action="OrderIndex" asp-route-status="@SD.Status_Cancelled">
+            <li class="list-group-item @cancelled">@SD.Status_Cancelled</li>
+            </a>
+        </ul>
     </div>
-    <div class="card-body border p-2">
-        <div class="d-flex justify-content-end pb-1 pt-2">
-            <ul class="list-group list-group-horizontal-sm">
-                <a style="text-decoration:none;" asp-controller="Order" asp-action="OrderIndex"
-                   asp-route-status="@SD.Status_Pending">
-                <li class="list-group-item @pending">@SD.Status_Pending</li>
-                </a>
-                <a style="text-decoration:none;" asp-controller="Order" asp-action="OrderIndex"
-                   asp-route-status="@SD.Status_Approved">
-                <li class="list-group-item @approved">@SD.Status_Approved</li>
-                </a>
-                <a style="text-decoration:none;" asp-controller="Order" asp-action="OrderIndex"
-                   asp-route-status="@SD.Status_Completed">
-                <li class="list-group-item @completed">@SD.Status_Completed</li>
-                </a>
-                <a style="text-decoration:none;" asp-controller="Order" asp-action="OrderIndex"
-                   asp-route-status="@SD.Status_Cancelled">
-                <li class="list-group-item @cancelled">@SD.Status_Cancelled</li>
-                </a>
-                <a style="text-decoration:none;" asp-controller="Order" asp-action="OrderIndex"
-                   asp-route-status="@SD.Status_Cancelled">
-                <li class="list-group-item @refunded">@SD.Status_Refunded</li>
-                </a>
-            </ul>
-        </div>
 
-        <div class="card-body p-4">
-            <table id="tblData" class="table table-bordered table-striped pt-3" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Status</th>
-                        <th>Total</th>
-                        <th></th>
-                    </tr>
-                </thead>
-            </table>
-        </div>
+
+    <div class="card-body p-4">
+        <table id="tblData" class="table table-bordered table-striped pt-3" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                    <th>Total</th>
+                    <th></th>
+                </tr>
+            </thead>
+        </table>
     </div>
+
 </div>
 @section Scripts {
     <script src="~/js/order.js"></script>

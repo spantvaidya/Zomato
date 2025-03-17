@@ -4,3 +4,6 @@
 		 As of now manually updating or setrting those fields.
 3. Token null after redirecting from Stripe payment back to Order Confirmation and validatingSessionPayment 
 4. Delete Cart Error
+5. RabbitMQ - Order Confirmation Email
+6. Removing Cart after placing Order
+7. OrderIndex Datatable.net - order desc not working

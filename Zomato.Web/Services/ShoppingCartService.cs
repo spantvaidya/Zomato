@@ -23,8 +23,7 @@ namespace Zomato.Web.Services
             return await _baseService.SendAsync(new RequestDto
             {
                 Apitype = SD.ApiType.POST,
-                Data = cartDetailsId,
-                Url = SD.CartAPIBase + "/api/cart/ClearCart/"
+                Url = SD.CartAPIBase + "/api/cart/ClearCart/"+ cartDetailsId
             }, true);
         }
 
