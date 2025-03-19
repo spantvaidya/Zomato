@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.PortableExecutable;
 using Zomato.MessageBus;
 using Zomato.Services.CartAPI.Data;
 using Zomato.Services.CartAPI.Models;
@@ -63,7 +64,7 @@ namespace Zomato.Services.CartAPI.Controller
                 if (cartHeader.CouponCode != null)
                 {
                     CouponDto coupon = await _couponService.GetCouponByCode(cartHeader.CouponCode);
-                    if (coupon != null && !String.IsNullOrEmpty(coupon.CouponCode) && cartHeader.CartTotal > (double)coupon.MinAmount)
+                    if (coupon != null && !String.IsNullOrEmpty(coupon.CouponCode) && cartHeader.CartTotal >= (double)coupon.MinAmount)
                     {
                         cartHeader.CouponCode = coupon.CouponCode;
                         cartHeader.Discount = (double)coupon.DiscountAmount;
@@ -193,11 +194,31 @@ namespace Zomato.Services.CartAPI.Controller
         {
             try
             {
-                var cartFromDb = await _dbContext.CartHeaders.FirstAsync(x => x.UserId == cartDto.CartHeader.UserId);
-                cartFromDb.CouponCode = cartDto.CartHeader.CouponCode;
-                _dbContext.Update(cartFromDb);
-                await _dbContext.SaveChangesAsync();
-                _responseDto.Result = true;
+                CouponDto coupon = await _couponService.GetCouponByCode(cartDto.CartHeader.CouponCode);
+
+                if (coupon != null)
+                {
+                    if(cartDto.CartHeader.CartTotal >= (double)coupon.MinAmount)
+                    {
+                        var cartFromDb = await _dbContext.CartHeaders.FirstAsync(x => x.UserId == cartDto.CartHeader.UserId);
+                        cartFromDb.CouponCode = cartDto.CartHeader.CouponCode;
+                        _dbContext.Update(cartFromDb);
+                        await _dbContext.SaveChangesAsync();
+                        _responseDto.Result = true;
+                    }
+                    else
+                    {
+                        _responseDto.IsSuccess = false;
+                        _responseDto.Message = "Min Amount required is " + 
+                            coupon.MinAmount.ToString("c",System.Globalization.CultureInfo.GetCultureInfo("hi-IN"));
+                    }                  
+                }
+                else
+                {
+                    _responseDto.IsSuccess = false;
+                    _responseDto.Message = "No Coupon Found";
+                    _responseDto.StatusCode = StatusCodes.Status404NotFound;
+                }
             }
             catch (Exception ex)
             {

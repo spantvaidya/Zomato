@@ -110,7 +110,11 @@ namespace Zomato.Web.Controllers
                 TempData["Success"] = "Coupon applied successfully";
                 return RedirectToAction(nameof(CartIndex));
             }
-            return View();
+            else
+            {
+                TempData["warning"] = response.Message;
+            }
+            return RedirectToAction(nameof(CartIndex));
         }
 
         [HttpPost("RemoveCoupon")]
