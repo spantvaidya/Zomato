@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Zomato.Web.Middlewares;
 using Zomato.Web.Services;
 using Zomato.Web.Services.IService;
 using Zomato.Web.Utility;
@@ -48,6 +49,9 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+//configure exception middleware
+app.UseMiddleware(typeof(GlobalExceptionHandler));
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
